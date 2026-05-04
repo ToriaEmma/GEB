@@ -7,14 +7,14 @@ import { ArrowUpRight, PlayCircle, StarIcon, QuotesIcon } from "@phosphor-icons/
 
 const testimonials = [
   {
-    quote: "La MEB a été le catalyseur dont mon entreprise avait besoin. Leur expertise et leur réseau ont littéralement transformé notre trajectoire de croissance.",
+    quote: "La GEB a été le catalyseur dont mon entreprise avait besoin. Leur expertise et leur réseau ont littéralement transformé notre trajectoire de croissance.",
     name: "Josué K.",
     title: "Fondateur, TechBénin",
     image: "/images/entrepreneur-1.png",
     stars: 5,
   },
   {
-    quote: "En 6 mois d'adhésion, j'ai signé 3 contrats majeurs grâce aux connexions du MEB. Cet écosystème est unique au Bénin.",
+    quote: "En 6 mois d'adhésion, j'ai signé 3 contrats majeurs grâce aux connexions du GEB. Cet écosystème est unique au Bénin.",
     name: "Fatima A.",
     title: "CEO, AgroFutur SARL",
     image: "/images/entrepreneur-2.png",
@@ -30,7 +30,7 @@ const testimonials = [
 ];
 
 const brands = [
-  "TechBénin", "AgroFutur", "InnoBénin", "CotonouHub", "StartBJ", "Petits-Déj'", "Mastermind", "MEB 2030",
+  "TechBénin", "AgroFutur", "InnoBénin", "CotonouHub", "StartBJ", "Petits-Déj'", "Mastermind", "GEB 2030",
   "TechBénin", "AgroFutur", "InnoBénin", "CotonouHub", "StartBJ", "Petits-Déj'",
 ];
 
@@ -134,7 +134,7 @@ export const Testimonials = () => {
             transition={{ delay: 0.2 }}
             className="font-body text-sm md:text-base text-meb-gray-500 max-w-xs border-l-2 border-meb-gray-300 pl-4 leading-relaxed md:pb-4"
           >
-            Des centaines d&apos;entrepreneurs ont transformé leur trajectoire grâce au MEB.
+            Des centaines d&apos;entrepreneurs ont transformé leur trajectoire grâce au GEB.
           </motion.p>
         </div>
 

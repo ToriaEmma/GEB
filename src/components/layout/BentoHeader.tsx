@@ -24,10 +24,29 @@ const InvertedCorner = ({ className, rotate = 0 }: { className?: string, rotate?
 
 export const BentoHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const isHome = pathname === "/";
 
-  if (isHome) return null;
+  useEffect(() => {
+    if (!isHome) {
+      setScrolled(true);
+      return;
+    }
+
+    const handleScroll = () => {
+      if (window.scrollY > 150) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isHome]);
 
   const navLinks = [
     { label: "Accueil", href: "/" },
@@ -40,9 +59,8 @@ export const BentoHeader = () => {
 
   return (
     <>
-      <header className={`fixed top-0 left-0 right-0 z-50 h-16 sm:h-20 md:h-24 pointer-events-none transition-colors duration-300 ${!isHome ? 'bg-[#050A18] shadow-lg' : ''}`}>
-        <div className="relative h-full">
-          
+      <header className={`fixed top-0 left-0 right-0 z-50 h-16 sm:h-20 md:h-24 pointer-events-none transition-all duration-300 ${scrolled ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}>
+        <div className={`relative h-full transition-colors duration-500 ${scrolled && isHome ? 'bg-[#050A18]/90 backdrop-blur-2xl' : !isHome ? 'bg-[#050A18]' : ''}`}>
           {/* Top Left Notch (Logo) */}
           <div className="absolute top-0 left-0 w-[180px] sm:w-[240px] md:w-[300px] h-16 sm:h-20 md:h-24 bg-white rounded-br-[32px] sm:rounded-br-[40px] pointer-events-auto shadow-sm">
             <div className="absolute top-0 -right-[40px] w-10 h-10 hidden sm:block">

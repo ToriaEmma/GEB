@@ -46,7 +46,7 @@ export const Footer = () => {
         <div className="flex flex-col sm:flex-row items-center justify-end gap-6 pt-4">
           <div className="flex items-center gap-6">
             <Link href="/a-propos" className="text-[14px] font-medium text-[#2D3047]/80 hover:text-[#2D3047] transition-colors">
-              À propos de MEB
+              À propos de GEB
             </Link>
             <Link href="/services" className="text-[14px] font-medium text-[#2D3047]/80 hover:text-[#2D3047] transition-colors">
               Nos Services

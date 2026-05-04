@@ -59,7 +59,7 @@ export const Navbar = () => {
               <div className={`relative transition-all duration-700 ${scrolled ? "w-60 h-20" : "w-72 h-32"}`}>
                 <Image
                   src="/images/logo-offici.png"
-                  alt="MEB Logo"
+                  alt="GEB Logo"
                   fill
                   className="object-contain object-left transition-all duration-700 group-hover:scale-105"
                   priority
