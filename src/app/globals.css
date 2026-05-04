@@ -1,0 +1,259 @@
+@import "tailwindcss";
+
+@theme {
+  /* ── MEB Ampdrive Palette ── */
+  --color-meb-accent: #4471c4;
+  --color-meb-dark: #2D3047;
+  --color-meb-dark-card: #1a2c4d;
+  --color-meb-dark-border: rgba(255, 255, 255, 0.1);
+  --color-meb-navy: #2D3047;
+  --color-meb-blue: #4471c4;
+  --color-meb-red: #E63946;
+  --color-meb-white: #FFFFFF;
+  --color-meb-gray-50: #FAFAFA;
+  --color-meb-gray-100: #F0F0F0;
+  --color-meb-gray-200: #E0E0E0;
+  --color-meb-gray-400: #999999;
+  --color-meb-gray-base: #CFDAE6;
+  /* From Ampdrive spec */
+  --color-meb-gray-500: #666666;
+  --color-meb-gray-700: #333333;
+
+  /* ── Typography ── */
+  --font-heading: var(--font-poppins), system-ui, sans-serif;
+  --font-body: var(--font-poppins), system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+  --font-serif: "Playfair Display", serif;
+
+  /* ── Shadows ── */
+  --shadow-none: 0 0 0 rgba(0, 0, 0, 0);
+  --shadow-glow: 0 0 100px rgba(68, 113, 196, 0.3);
+}
+
+/* ═══════════════════════════════════════
+   BASE
+   ═══════════════════════════════════════ */
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-meb-white);
+  background: var(--color-meb-dark);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-meb-accent);
+  color: #FFFFFF;
+}
+
+/* ═══════════════════════════════════════
+   UTILITIES (Ampdrive Style)
+   ═══════════════════════════════════════ */
+
+.text-accent {
+  color: var(--color-meb-accent);
+}
+
+/* Solid Bento Cards */
+.card-solid-blue {
+  background: var(--color-meb-accent);
+  color: var(--color-meb-white);
+  border: 1px solid var(--color-meb-dark);
+  border-radius: 12px;
+}
+
+.card-solid-dark {
+  background: var(--color-meb-dark);
+  color: var(--color-meb-white);
+  border: 1px solid var(--color-meb-dark-border);
+  border-radius: 12px;
+}
+
+.card-solid-white {
+  background: var(--color-meb-white);
+  color: var(--color-meb-dark);
+  border: 1px solid var(--color-meb-gray-200);
+  border-radius: 12px;
+}
+
+/* Linear patterns (Tech intersecting lines) */
+.tech-lines {
+  background-image:
+    linear-gradient(to right, rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.tech-lines-light {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* 3D Glass Blob */
+.glass-blob {
+  background: linear-gradient(135deg, rgba(68, 113, 196, 0.4) 0%, rgba(68, 113, 196, 0.1) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+  box-shadow: 0 0 80px rgba(68, 113, 196, 0.3);
+}
+
+/* ═══════════════════════════════════════
+   SCROLLBAR
+   ═══════════════════════════════════════ */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-meb-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-meb-dark-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-meb-accent);
+}
+
+/* ═══════════════════════════════════════
+   FOCUS
+   ═══════════════════════════════════════ */
+
+*:focus-visible {
+  outline: 2px solid var(--color-meb-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ═══════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════ */
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes progress {
+  0% {
+    transform: scaleX(1);
+  }
+
+  100% {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes shrink {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
+  }
+}
+
+/* ═══════════════════════════════════════
+   CUSTOM MASK EFFECTS
+   ═══════════════════════════════════════ */
+
+.inverted-radius {
+  --r: 20px;
+  --s: 30px;
+  --x: 20px;
+  --y: 10px;
+  border-radius: var(--r);
+  --_m:/calc(2*var(--r)) calc(2*var(--r)) radial-gradient(#000 70%,#0000 72%);
+  --_g:conic-gradient(at calc(100% - var(--r)) var(--r),#0000 25%,#000 0);
+  --_d:(var(--s) + var(--r));
+  -webkit-mask:
+    calc(100% - var(--_d) - var(--x)) 0 var(--_m),
+    100% calc(var(--_d) + var(--y)) var(--_m),
+    radial-gradient(var(--s) at 100% 0,#0000 99%,#000 calc(100% + 1px)) 
+     calc(-1*var(--r) - var(--x)) calc(var(--r) + var(--y)),
+    var(--_g) calc(-1*var(--_d) - var(--x)) 0,
+    var(--_g) 0 calc(var(--_d) + var(--y));
+  mask:
+    calc(100% - var(--_d) - var(--x)) 0 var(--_m),
+    100% calc(var(--_d) + var(--y)) var(--_m),
+    radial-gradient(var(--s) at 100% 0,#0000 99%,#000 calc(100% + 1px)) 
+     calc(-1*var(--r) - var(--x)) calc(var(--r) + var(--y)),
+    var(--_g) calc(-1*var(--_d) - var(--x)) 0,
+    var(--_g) 0 calc(var(--_d) + var(--y));
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.inverted-radius-left {
+  --r: 20px; /* the radius */
+  --s: 30px; /* size of inner curve */
+  --x: 20px; /* horizontal offset */
+  --y: 10px; /* vertical offset */
+  
+  border-radius: var(--r);
+  --_m: / calc(2*var(--r)) calc(2*var(--r)) radial-gradient(#000 70%,#0000 72%);
+  --_g: conic-gradient(at var(--r) var(--r),#000 75%,#0000 0);
+  --_d: (var(--s) + var(--r));
+  
+  -webkit-mask:
+    calc(var(--_d) + var(--x)) 0 var(--_m),
+    0 calc(var(--_d) + var(--y)) var(--_m),
+    radial-gradient(var(--s) at 0 0,#0000 99%,#000 calc(100% + 1px)) 
+     calc(var(--r) + var(--x)) calc(var(--r) + var(--y)),
+    var(--_g) calc(var(--_d) + var(--x)) 0,
+    var(--_g) 0 calc(var(--_d) + var(--y));
+  -webkit-mask-repeat: no-repeat;
+
+  mask:
+    calc(var(--_d) + var(--x)) 0 var(--_m),
+    0 calc(var(--_d) + var(--y)) var(--_m),
+    radial-gradient(var(--s) at 0 0,#0000 99%,#000 calc(100% + 1px)) 
+     calc(var(--r) + var(--x)) calc(var(--r) + var(--y)),
+    var(--_g) calc(var(--_d) + var(--x)) 0,
+    var(--_g) 0 calc(var(--_d) + var(--y));
+  mask-repeat: no-repeat;
+}
+.inverted-radius-bottom-right {
+  --r: 40px;
+  --s: 40px;
+  --x: 0px;
+  --y: 0px;
+  --_m:/calc(2*var(--r)) calc(2*var(--r)) radial-gradient(#000 70%,#0000 72%);
+  --_g:conic-gradient(at calc(100% - var(--r)) calc(100% - var(--r)),#000 75%,#0000 0);
+  --_d:(var(--s) + var(--r));
+  -webkit-mask:
+    calc(100% - var(--_d) - var(--x)) 100% var(--_m),
+    100% calc(100% - var(--_d) - var(--y)) var(--_m),
+    radial-gradient(var(--s) at 100% 100%,#0000 99%,#000 calc(100% + 1px)) 
+     calc(-1*var(--r) - var(--x)) calc(-1*var(--r) - var(--y)),
+    var(--_g) calc(-1*var(--_d) - var(--x)) 100%,
+    var(--_g) 100% calc(-1*var(--_d) - var(--y));
+  -webkit-mask-repeat: no-repeat;
+  mask:
+    calc(100% - var(--_d) - var(--x)) 100% var(--_m),
+    100% calc(100% - var(--_d) - var(--y)) var(--_m),
+    radial-gradient(var(--s) at 100% 100%,#0000 99%,#000 calc(100% + 1px)) 
+     calc(-1*var(--r) - var(--x)) calc(-1*var(--r) - var(--y)),
+    var(--_g) calc(-1*var(--_d) - var(--x)) 100%,
+    var(--_g) 100% calc(-1*var(--_d) - var(--y));
+  mask-repeat: no-repeat;
+}
