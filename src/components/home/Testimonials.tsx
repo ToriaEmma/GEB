@@ -31,6 +31,29 @@ const slideVariants: Variants = {
   }),
 };
 
+const portraitVariants: Variants = {
+  enter: (direction: number) => ({
+    opacity: 0,
+    scale: 1.05,
+  }),
+  center: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.6,
+      ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+    },
+  },
+  exit: (direction: number) => ({
+    opacity: 0,
+    scale: 0.95,
+    transition: {
+      duration: 0.6,
+      ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+    },
+  }),
+};
+
 export const Testimonials = () => {
   const { t, language } = useLanguage();
   const [active, setActive] = useState(0);
