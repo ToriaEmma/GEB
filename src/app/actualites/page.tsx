@@ -46,7 +46,7 @@ export default function ActualitesPage() {
     return (
         <main ref={containerRef} className="min-h-screen bg-[#111c2f] text-white pt-32 pb-32 overflow-hidden">
             {/* Monumental Header */}
-            <section className="relative w-full py-20 flex justify-center items-center overflow-hidden pointer-events-none">
+            <section className={`relative w-full py-20 flex items-center overflow-hidden pointer-events-none ${language === 'EN' ? 'justify-start -ml-12' : 'justify-center'}`}>
                 <motion.h1
                     style={{ x: xMove }}
                     className="text-[22vw] font-heading font-black leading-none tracking-tighter text-[#4471c4] uppercase opacity-90 select-none whitespace-nowrap"

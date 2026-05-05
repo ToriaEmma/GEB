@@ -8,7 +8,7 @@ import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function AboutPage() {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const containerRef = React.useRef(null);
     const { scrollYProgress } = useScroll({
         target: containerRef,
@@ -94,10 +94,10 @@ export default function AboutPage() {
             </section>
 
             {/* Monumental Typography Section */}
-            <section className="relative w-full py-2 flex justify-center items-center overflow-hidden">
+            <section className={`relative w-full py-2 flex items-center overflow-hidden ${language === 'EN' ? 'justify-end -mr-12' : 'justify-center'}`}>
                 <motion.h1 
                     style={{ x: xMove }}
-                    className="text-[20vw] md:text-[21vw] font-heading font-extrabold leading-none tracking-tighter text-[#4471c4] uppercase opacity-90 select-none text-center whitespace-nowrap"
+                    className={`text-[20vw] md:text-[21vw] font-heading font-extrabold leading-none tracking-tighter text-[#4471c4] uppercase opacity-90 select-none whitespace-nowrap ${language === 'EN' ? 'text-right' : 'text-center'}`}
                 >
                     {t("a_propos_monumental")}
                 </motion.h1>
