@@ -222,8 +222,7 @@ const translations = {
     expertise_iso: "Expertise ISO",
     audit_pme: "Audit PME",
     formation_2024: "Formation 2024",
-    connexion: "Se connecter",
-    prendre_rdv: "Prendre rendez-vous",
+
     langue_label: "Langue",
     francais: "Français",
     anglais: "Anglais",
@@ -443,8 +442,7 @@ const translations = {
     expertise_iso: "ISO Expertise",
     audit_pme: "SME Audit",
     formation_2024: "2024 Training",
-    connexion: "Login",
-    prendre_rdv: "Book an appointment",
+
     langue_label: "Language",
     francais: "French",
     anglais: "English",
