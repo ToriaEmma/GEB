@@ -7,6 +7,29 @@ import { ArrowUpRight, PlayCircle, StarIcon, QuotesIcon } from "@phosphor-icons/
 
 import { useLanguage } from "@/context/LanguageContext";
 
+const slideVariants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? 100 : -100,
+    opacity: 0,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+      ease: [0.16, 1, 0.3, 1],
+    },
+  },
+  exit: (direction: number) => ({
+    x: direction < 0 ? 100 : -100,
+    opacity: 0,
+    transition: {
+      duration: 0.5,
+      ease: [0.16, 1, 0.3, 1],
+    },
+  }),
+};
+
 export const Testimonials = () => {
   const { t, language } = useLanguage();
   const [active, setActive] = useState(0);
