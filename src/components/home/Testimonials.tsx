@@ -5,9 +5,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { ArrowUpRight, PlayCircle, StarIcon, QuotesIcon } from "@phosphor-icons/react";
 
+import { Variants } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
 
-const slideVariants = {
+const slideVariants: Variants = {
   enter: (direction: number) => ({
     x: direction > 0 ? 100 : -100,
     opacity: 0,
@@ -17,7 +18,7 @@ const slideVariants = {
     opacity: 1,
     transition: {
       duration: 0.5,
-      ease: [0.16, 1, 0.3, 1],
+      ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
     },
   },
   exit: (direction: number) => ({
@@ -25,7 +26,7 @@ const slideVariants = {
     opacity: 0,
     transition: {
       duration: 0.5,
-      ease: [0.16, 1, 0.3, 1],
+      ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
     },
   }),
 };
