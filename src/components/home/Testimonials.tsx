@@ -5,82 +5,42 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { ArrowUpRight, PlayCircle, StarIcon, QuotesIcon } from "@phosphor-icons/react";
 
-const testimonials = [
-  {
-    quote: "La GEB a été le catalyseur dont mon entreprise avait besoin. Leur expertise et leur réseau ont littéralement transformé notre trajectoire de croissance.",
-    name: "Josué K.",
-    title: "Fondateur, TechBénin",
-    image: "/images/entrepreneur-1.png",
-    stars: 5,
-  },
-  {
-    quote: "En 6 mois d'adhésion, j'ai signé 3 contrats majeurs grâce aux connexions du GEB. Cet écosystème est unique au Bénin.",
-    name: "Fatima A.",
-    title: "CEO, AgroFutur SARL",
-    image: "/images/entrepreneur-2.png",
-    stars: 5,
-  },
-  {
-    quote: "Le Mastermind mensuel m'a permis de résoudre des blocages stratégiques que je traînais depuis des années. Indispensable.",
-    name: "Marc-Élie D.",
-    title: "Directeur, InnoBénin",
-    image: "/images/entrepreneur-1.png",
-    stars: 5,
-  },
-];
-
-const brands = [
-  "TechBénin", "AgroFutur", "InnoBénin", "CotonouHub", "StartBJ", "Petits-Déj'", "Mastermind", "GEB 2030",
-  "TechBénin", "AgroFutur", "InnoBénin", "CotonouHub", "StartBJ", "Petits-Déj'",
-];
-
-// Direction-aware slide variants — type-safe Framer Motion config
-const slideVariants = {
-  enter: (dir: number) => ({
-    x: dir * 40,
-    opacity: 0,
-    filter: "blur(6px)",
-  }),
-  center: {
-    x: 0,
-    opacity: 1,
-    filter: "blur(0px)",
-    transition: {
-      x: { type: "spring" as const, stiffness: 260, damping: 28 },
-      opacity: { duration: 0.35, ease: "easeOut" as const },
-      filter: { duration: 0.35, ease: "easeOut" as const },
-    },
-  },
-  exit: (dir: number) => ({
-    x: dir * -40,
-    opacity: 0,
-    filter: "blur(6px)",
-    transition: {
-      x: { type: "spring" as const, stiffness: 260, damping: 28 },
-      opacity: { duration: 0.25, ease: "easeIn" as const },
-      filter: { duration: 0.25, ease: "easeIn" as const },
-    },
-  }),
-};
-
-const portraitVariants = {
-  enter: { opacity: 0, scale: 1.04 },
-  center: {
-    opacity: 1,
-    scale: 1,
-    transition: { duration: 0.55, ease: "easeOut" as const },
-  },
-  exit: {
-    opacity: 0,
-    scale: 0.97,
-    transition: { duration: 0.3, ease: "easeIn" as const },
-  },
-};
+import { useLanguage } from "@/context/LanguageContext";
 
 export const Testimonials = () => {
+  const { t, language } = useLanguage();
   const [active, setActive] = useState(0);
   const [direction, setDirection] = useState(1);
   const isPaused = useRef(false);
+
+  const testimonials = [
+    {
+      quote: language === 'FR' ? "La BEG a été le catalyseur dont mon entreprise avait besoin. Leur expertise et leur réseau ont littéralement transformé notre trajectoire de croissance." : "BEG was the catalyst my business needed. Their expertise and network literally transformed our growth trajectory.",
+      name: "Josué K.",
+      title: language === 'FR' ? "Fondateur, TechBénin" : "Founder, TechBénin",
+      image: "/images/entrepreneur-1.png",
+      stars: 5,
+    },
+    {
+      quote: language === 'FR' ? "En 6 mois d'adhésion, j'ai signé 3 contrats majeurs grâce aux connexions du BEG. Cet écosystème est unique au Bénin." : "In 6 months of membership, I signed 3 major contracts thanks to BEG's connections. This ecosystem is unique in Benin.",
+      name: "Fatima A.",
+      title: "CEO, AgroFutur SARL",
+      image: "/images/entrepreneur-2.png",
+      stars: 5,
+    },
+    {
+      quote: language === 'FR' ? "Le Mastermind mensuel m'a permis de résoudre des blocages stratégiques que je traînais depuis des années. Indispensable." : "The monthly Mastermind allowed me to solve strategic blockages I had been dragging for years. Essential.",
+      name: "Marc-Élie D.",
+      title: language === 'FR' ? "Directeur, InnoBénin" : "Director, InnoBénin",
+      image: "/images/entrepreneur-1.png",
+      stars: 5,
+    },
+  ];
+
+  const brands = [
+    "TechBénin", "AgroFutur", "InnoBénin", "CotonouHub", "StartBJ", "Petits-Déj'", "Mastermind", "BEG 2030",
+    "TechBénin", "AgroFutur", "InnoBénin", "CotonouHub", "StartBJ", "Petits-Déj'",
+  ];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -90,7 +50,7 @@ export const Testimonials = () => {
       }
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [testimonials.length]);
 
   const goTo = (i: number) => {
     if (i === active) return;
@@ -100,7 +60,7 @@ export const Testimonials = () => {
     setTimeout(() => { isPaused.current = false; }, 8000);
   };
 
-  const t = testimonials[active];
+  const currentTestimonial = testimonials[active];
 
   return (
     <section
@@ -120,11 +80,11 @@ export const Testimonials = () => {
             transition={{ duration: 0.6 }}
           >
             <span className="font-heading text-sm font-bold tracking-widest uppercase text-meb-green mb-4 block">
-              La Voix des Entrepreneurs
+              {t('voix_entrepreneurs')}
             </span>
             <h2 className="font-heading font-bold text-[40px] md:text-[56px] lg:text-[72px] leading-[1.05] tracking-tight text-meb-dark max-w-2xl">
-              Ils réinventent<br />
-              <span className="font-light text-meb-gray-500">l&apos;économie.</span>
+              {t('ils_reinventent')}<br />
+              <span className="font-light text-meb-gray-500">{t('economie')}</span>
             </h2>
           </motion.div>
           <motion.p
@@ -134,7 +94,7 @@ export const Testimonials = () => {
             transition={{ delay: 0.2 }}
             className="font-body text-sm md:text-base text-meb-gray-500 max-w-xs border-l-2 border-meb-gray-300 pl-4 leading-relaxed md:pb-4"
           >
-            Des centaines d&apos;entrepreneurs ont transformé leur trajectoire grâce au GEB.
+            {t('centaines_entrepreneurs')}
           </motion.p>
         </div>
 
@@ -164,26 +124,22 @@ export const Testimonials = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
 
           {/* ── LEFT: white quote card ── */}
-          {/*
-            Card itself is static. Only the inner content animates.
-            overflow-hidden + relative wrapper ensures nothing bleeds outside.
-          */}
           <div className="lg:col-span-8 bg-white rounded-[1.5rem] md:rounded-[2rem] relative overflow-hidden group min-h-[440px] md:min-h-[500px]">
-            {/* Static decorations that never change */}
+            {/* Static decorations */}
             <QuotesIcon
               size={180}
               weight="fill"
               className="absolute right-4 top-8 text-meb-gray-100 pointer-events-none select-none z-0"
             />
 
-            {/* Stars row — static */}
+            {/* Stars row */}
             <div className="absolute top-8 md:top-14 left-8 md:left-14 lg:left-16 flex gap-1 z-10">
               {Array.from({ length: 5 }).map((_, i) => (
                 <StarIcon key={i} size={18} weight="fill" className="text-meb-green" />
               ))}
             </div>
 
-            {/* Animated content block — absolutely fills the card */}
+            {/* Animated content block */}
             <AnimatePresence mode="sync" custom={direction} initial={false}>
               <motion.div
                 key={active}
@@ -197,15 +153,15 @@ export const Testimonials = () => {
                 {/* Quote */}
                 <div className="flex-1 flex items-center">
                   <h3 className="font-heading font-medium text-2xl md:text-3xl lg:text-[34px] text-meb-dark leading-relaxed tracking-normal">
-                    &ldquo;{t.quote}&rdquo;
+                    &ldquo;{currentTestimonial.quote}&rdquo;
                   </h3>
                 </div>
 
                 {/* Author */}
                 <div className="flex items-center justify-between border-t border-meb-gray-200 pt-6 mt-6">
                   <div>
-                    <div className="font-heading font-bold text-xl md:text-2xl text-meb-dark">{t.name}</div>
-                    <div className="font-mono text-xs text-meb-gray-500 uppercase tracking-[0.2em] font-bold mt-1.5">{t.title}</div>
+                    <div className="font-heading font-bold text-xl md:text-2xl text-meb-dark">{currentTestimonial.name}</div>
+                    <div className="font-mono text-xs text-meb-gray-500 uppercase tracking-[0.2em] font-bold mt-1.5">{currentTestimonial.title}</div>
                   </div>
                   <div className="p-3 md:p-5 rounded-full bg-meb-gray-100 group-hover:bg-meb-green group-hover:text-white transition-colors duration-500 transform group-hover:rotate-45 shrink-0">
                     <ArrowUpRight size={22} weight="bold" />
@@ -218,7 +174,7 @@ export const Testimonials = () => {
           {/* ── RIGHT column ── */}
           <div className="lg:col-span-4 flex flex-col gap-5">
 
-            {/* Portrait — fixed container, only image crossfades */}
+            {/* Portrait */}
             <div className="rounded-[1.5rem] md:rounded-[2rem] relative overflow-hidden min-h-[300px] lg:min-h-0 flex-1 bg-[#111] group/img">
               <AnimatePresence mode="sync" custom={direction} initial={false}>
                 <motion.div
@@ -230,8 +186,8 @@ export const Testimonials = () => {
                   className="absolute inset-0"
                 >
                   <Image
-                    src={t.image}
-                    alt={t.name}
+                    src={currentTestimonial.image}
+                    alt={currentTestimonial.name}
                     fill
                     className="object-cover grayscale group-hover/img:grayscale-0 transition-all duration-700"
                     priority
@@ -239,13 +195,13 @@ export const Testimonials = () => {
                 </motion.div>
               </AnimatePresence>
 
-              {/* Overlay — static */}
+              {/* Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-meb-dark/90 via-meb-dark/20 to-transparent z-10 pointer-events-none" />
 
-              {/* Bottom label — static */}
+              {/* Bottom label */}
               <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between z-20">
                 <span className="font-mono text-[10px] tracking-[0.2em] text-white uppercase font-bold">
-                  Voir l&apos;histoire
+                  {t('voir_histoire')}
                 </span>
                 <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white border border-white/30 group-hover/img:bg-meb-green group-hover/img:border-meb-green transition-all duration-500">
                   <PlayCircle size={20} weight="fill" />
@@ -260,7 +216,7 @@ export const Testimonials = () => {
                   500<span className="text-meb-green">+</span>
                 </div>
                 <div className="font-mono text-[10px] tracking-widest uppercase text-white/40 font-bold mt-1">
-                  Entrepreneurs accompagnés
+                  {t('entreprises_accompagnees')}
                 </div>
               </div>
               <div className="w-11 h-11 rounded-full bg-meb-green/10 flex items-center justify-center text-meb-green group-hover:bg-meb-green group-hover:text-meb-dark transition-all duration-400">

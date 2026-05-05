@@ -18,10 +18,22 @@ const navLinks = [
   { label: "Contact", href: "/contact" },
 ];
 
+import { useLanguage } from "@/context/LanguageContext";
+
 export const Navbar = () => {
+  const { t } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+
+  const navLinks = [
+    { label: t("accueil"), href: "/" },
+    { label: t("apropos"), href: "/a-propos" },
+    { label: t("services"), href: "/services" },
+    { label: t("realisations"), href: "/realisations" },
+    { label: t("actualites"), href: "/actualites" },
+    { label: t("contact"), href: "/contact" },
+  ];
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 20);
@@ -59,7 +71,7 @@ export const Navbar = () => {
               <div className={`relative transition-all duration-700 ${scrolled ? "w-60 h-20" : "w-72 h-32"}`}>
                 <Image
                   src="/images/logo-offici.png"
-                  alt="GEB Logo"
+                  alt="BEG Logo"
                   fill
                   className="object-contain object-left transition-all duration-700 group-hover:scale-105"
                   priority
@@ -93,7 +105,7 @@ export const Navbar = () => {
                 : "bg-white text-gray-900 shadow-md hover:bg-gray-50 hover:scale-105"
                 }`}
             >
-              Se connecter
+              {t('connexion')}
             </Link>
           </div>
 
@@ -170,7 +182,7 @@ export const Navbar = () => {
                   className="relative overflow-hidden group bg-[#4471c4] text-white font-heading font-bold uppercase tracking-widest text-[11px] text-center py-5 rounded-full shadow-lg shadow-[#4471c4]/20"
                 >
                   <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]" />
-                  <span className="relative z-10 group-hover:text-[#4471c4] transition-colors duration-500">Prendre rendez-vous</span>
+                  <span className="relative z-10 group-hover:text-[#4471c4] transition-colors duration-500">{t('prendre_rdv')}</span>
                 </Link>
               </div>
             </div>

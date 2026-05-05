@@ -2,13 +2,15 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useLanguage } from "@/context/LanguageContext";
 
 export const PartnersMarquee = () => {
+    const { t } = useLanguage();
     return (
         <section className="py-20 bg-white w-full overflow-hidden">
             <div className="max-w-[1240px] mx-auto px-5 sm:px-8">
                 <p className="font-heading text-[#4471c4] text-xl md:text-2xl uppercase tracking-widest font-bold mb-12 text-center">
-                    Notre réseau de confiance
+                    {t("reseau_confiance")}
                 </p>
                 <div className="relative w-full overflow-hidden mask-image-fade">
                     <motion.div

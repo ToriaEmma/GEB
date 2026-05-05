@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Globe, User, List } from "@phosphor-icons/react";
 import { MobileMenuOverlay } from "./MobileMenuOverlay";
+import { useLanguage } from "@/context/LanguageContext";
 
 const navLinks = [
   { label: "Accueil", href: "/" },
@@ -20,6 +21,16 @@ export const FloatingNavbar = () => {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { language, toggleLanguage, t } = useLanguage();
+
+  const navLinks = [
+    { label: t("accueil"), href: "/" },
+    { label: t("apropos"), href: "/a-propos" },
+    { label: t("services"), href: "/services" },
+    { label: t("realisations"), href: "/realisations" },
+    { label: t("actualites"), href: "/actualites" },
+    { label: t("contact"), href: "/contact" },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -72,14 +83,17 @@ export const FloatingNavbar = () => {
 
               {/* Icons / Actions */}
               <div className="flex items-center gap-2 md:gap-4">
-                <button className="text-white/80 hover:text-white transition-colors flex items-center gap-2 px-2 md:px-0">
+                <button 
+                  onClick={toggleLanguage}
+                  className="text-white/80 hover:text-white transition-colors flex items-center gap-2 px-2 md:px-0"
+                >
                   <Globe size={18} weight="bold" />
-                  <span className="text-[10px] font-bold">FR</span>
+                  <span className="text-[10px] font-bold">{language}</span>
                 </button>
                 
                 <Link href="/connexion" className="bg-white text-[#050A18] px-3 py-1.5 md:px-4 md:py-2 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest hover:bg-[#4471c4] hover:text-white transition-all flex items-center gap-2">
                   <User size={14} weight="bold" />
-                  <span className="hidden sm:inline">Connexion</span>
+                  <span className="hidden sm:inline">{t("connexion")}</span>
                 </Link>
 
                 {/* Mobile Menu Toggle */}

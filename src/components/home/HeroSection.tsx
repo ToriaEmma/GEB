@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { MobileMenuOverlay } from "../layout/MobileMenuOverlay";
+import { useLanguage } from "@/context/LanguageContext";
 
 const InvertedCorner = ({ className, rotate = 0 }: { className?: string, rotate?: number }) => (
   <svg 
@@ -42,29 +43,31 @@ export const HeroSection = () => {
   const contentY = useTransform(scrollYProgress, [0, 0.4], [0, 50]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
 
+  const { language, toggleLanguage, t } = useLanguage();
+
   const navLinks = [
-    { label: "Accueil", href: "/" },
-    { label: "À propos", href: "/a-propos" },
-    { label: "Services", href: "/services" },
-    { label: "Réalisations", href: "/realisations" },
-    { label: "Actualités", href: "/actualites" },
-    { label: "Contact", href: "/contact" },
+    { label: t("accueil"), href: "/" },
+    { label: t("apropos"), href: "/a-propos" },
+    { label: t("services"), href: "/services" },
+    { label: t("realisations"), href: "/realisations" },
+    { label: t("actualites"), href: "/actualites" },
+    { label: t("contact"), href: "/contact" },
   ];
   
   const cards = [
     {
-      title: "AUDIT & CONFORMITÉ",
-      desc: "Anticipez les risques et assurez la conformité de votre organisation avec nos experts certifiés ISO.",
+      title: t("audit_conformite"),
+      desc: t("audit_desc"),
       image: "/images/home/hero-vr.png"
     },
     {
-      title: "FORMATION CERTIFIANTE",
-      desc: "Développez les compétences de vos équipes avec nos programmes aux standards internationaux.",
+      title: t("formation_certifiante"),
+      desc: t("formation_desc"),
       image: "/images/home/team-hero.jpg"
     },
     {
-      title: "CONSEIL STRATÉGIQUE",
-      desc: "Optimisez votre gouvernance et vos processus pour une performance durable et mesurable.",
+      title: t("conseil_strategique"),
+      desc: t("conseil_desc"),
       image: "/images/hero/Image collée.png"
     }
   ];
@@ -142,13 +145,13 @@ export const HeroSection = () => {
                             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
                         >
                             <h1 className="font-heading font-black text-[22px] xs:text-[26px] sm:text-4xl md:text-6xl lg:text-[80px] text-white leading-[1.1] mb-4 sm:mb-6 md:mb-10 tracking-tighter uppercase break-words">
-                                VOTRE PARTENAIRE <br className="hidden xs:block sm:block" />
-                                <span className="text-white">EN EXCELLENCE</span>
+                                {t("votre_partenaire")} <br className="hidden xs:block sm:block" />
+                                <span className="text-white">{t("en_excellence")}</span>
                             </h1>
                             
                             <Link href="/services">
                                 <button className="bg-[#4471c4] text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full font-bold uppercase text-[8px] sm:text-[10px] tracking-[0.15em] hover:scale-105 transition-all shadow-xl shadow-[#4471c4]/20 flex items-center gap-2 sm:gap-3 group">
-                                    Découvrir l'Excellence
+                                    {t("decouvrir_excellence")}
                                     <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white/20 flex items-center justify-center group-hover:rotate-45 transition-transform">
                                         <ArrowUpRight size={10} weight="bold" />
                                     </div>
@@ -195,13 +198,16 @@ export const HeroSection = () => {
                   <InvertedCorner rotate={270} />
               </div>
               <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 h-full px-2">
-                  <button className="w-9 h-9 sm:w-10 sm:h-10 md:w-14 md:h-14 rounded-full border border-gray-100 flex flex-col items-center justify-center text-[#050A18] hover:bg-gray-50 transition-colors shadow-sm group">
+                  <button 
+                    onClick={toggleLanguage}
+                    className="w-9 h-9 sm:w-10 sm:h-10 md:w-14 md:h-14 rounded-full border border-gray-100 flex flex-col items-center justify-center text-[#050A18] hover:bg-gray-50 transition-colors shadow-sm group"
+                  >
                       <Globe size={18} weight="bold" className="group-hover:rotate-12 transition-transform md:hidden" />
                       <Globe size={20} weight="bold" className="group-hover:rotate-12 transition-transform hidden md:block" />
-                      <span className="text-[6px] md:text-[7px] font-black mt-0.5">FR</span>
+                      <span className="text-[6px] md:text-[7px] font-black mt-0.5">{language}</span>
                   </button>
                   <Link href="/connexion" className="flex items-center gap-2 sm:gap-3 bg-[#050A18] text-white px-4 sm:pl-6 md:pl-8 sm:pr-4 h-9 sm:h-10 md:h-14 rounded-full hover:scale-105 transition-transform group">
-                      <span className="font-heading text-[8px] sm:text-[10px] md:text-xs font-bold uppercase tracking-widest hidden sm:inline">Connexion</span>
+                      <span className="font-heading text-[8px] sm:text-[10px] md:text-xs font-bold uppercase tracking-widest hidden sm:inline">{t("connexion")}</span>
                       <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-9 md:h-9 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-[#4471c4]">
                           <ArrowUpRight size={10} weight="bold" className="md:hidden" />
                           <ArrowUpRight size={12} weight="bold" className="hidden md:block" />

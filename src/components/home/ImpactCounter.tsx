@@ -2,22 +2,25 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-
-const impacts = [
-  { value: "50", suffix: "+", label: "ENTREPRISES ACCOMPAGNÉES", theme: "dark", badgeContent: "01" },
-  { value: "Experts", suffix: "", label: "CERTIFIÉS INTERNATIONAUX", theme: "abstract", badgeContent: "02" },
-  { value: "Afrique", suffix: "", label: "PRÉSENCE CONTINENTALE", theme: "yellow", badgeContent: "03" },
-  { value: "ISO", suffix: "", label: "APPROCHE RÉSULTATS", theme: "dark", badgeContent: "04" },
-];
+import { useLanguage } from "@/context/LanguageContext";
 
 export const ImpactCounter = () => {
+  const { t } = useLanguage();
+
+  const impacts = [
+    { value: "50", suffix: "+", label: t("entreprises_accompagnees"), theme: "dark", badgeContent: "01" },
+    { value: t("experts_value"), suffix: "", label: t("experts_certifies_inter"), theme: "abstract", badgeContent: "02" },
+    { value: t("afrique_value"), suffix: "", label: t("presence_continentale"), theme: "yellow", badgeContent: "03" },
+    { value: "ISO", suffix: "", label: t("approche_resultats_label"), theme: "dark", badgeContent: "04" },
+  ];
+
   return (
     <section className="py-20 md:py-28 bg-[#4471c4] w-full overflow-hidden">
       <div className="max-w-[1240px] mx-auto px-5 sm:px-8">
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, amount: 0.1 }}
           variants={{
             hidden: { opacity: 0 },
             visible: {
@@ -60,12 +63,11 @@ export const ImpactCounter = () => {
               <motion.div
                 key={idx}
                 variants={{
-                  hidden: { opacity: 0, scale: 0.8, y: 30 },
+                  hidden: { opacity: 0, y: 100 },
                   visible: {
                     opacity: 1,
-                    scale: 1,
                     y: 0,
-                    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
+                    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
                   },
                 }}
                 whileHover={{ y: -10, transition: { duration: 0.3 } }}
@@ -98,27 +100,34 @@ export const ImpactCounter = () => {
           })}
 
           {/* Bottom Row - Heading & Paragraph */}
-          <div className="lg:col-span-3 pt-6 pb-2 pr-0 lg:pr-10">
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:col-span-3 pt-6 pb-2 pr-0 lg:pr-10"
+          >
             <h2 className="text-5xl md:text-7xl lg:text-[100px] font-black tracking-tighter leading-[0.85] text-white uppercase">
-              Excellence <br />
-              <span className="text-[#2D3047]">Opérationnelle.</span>
+              {t("excellence_operationnelle")} <br />
+              <span className="text-[#2D3047]">{t("operationnelle")}</span>
             </h2>
             <p className="text-sm md:text-base text-white/50 mt-6 leading-relaxed max-w-md">
-              Nous aidons les organisations à atteindre des standards internationaux et améliorer durablement leurs performances.
+              {t("aide_organisations")}
             </p>
-          </div>
+          </motion.div>
 
           {/* Bottom Row - Badge */}
           <div className="lg:col-span-1 flex items-end justify-end pb-4 pr-4">
             <motion.div
-              initial={{ rotate: -10, scale: 0.8 }}
-              whileInView={{ rotate: 0, scale: 1 }}
-              transition={{ type: "spring", stiffness: 100 }}
+              initial={{ rotate: -10, scale: 0.8, opacity: 0 }}
+              whileInView={{ rotate: 0, scale: 1, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ type: "spring", stiffness: 100, delay: 0.4 }}
               className="w-24 h-24 sm:w-28 sm:h-28 bg-white/10 border border-white/5 backdrop-blur-md rounded-[2.5rem] flex items-center justify-center shadow-2xl overflow-hidden p-0"
             >
               <Image 
                 src="/images/favicon.png" 
-                alt="GEB Logo" 
+                alt="BEG Logo" 
                 width={120} 
                 height={120} 
                 className="w-full h-full object-contain opacity-80 scale-[2]"

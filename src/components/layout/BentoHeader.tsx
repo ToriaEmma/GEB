@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, Globe, List } from "@phosphor-icons/react";
 import { MobileMenuOverlay } from "./MobileMenuOverlay";
+import { useLanguage } from "@/context/LanguageContext";
 
 const InvertedCorner = ({ className, rotate = 0 }: { className?: string, rotate?: number }) => (
   <svg 
@@ -28,6 +29,8 @@ export const BentoHeader = () => {
   const pathname = usePathname();
   const isHome = pathname === "/";
 
+  const isBlueHeader = pathname === "/services" || pathname === "/realisations";
+
   useEffect(() => {
     if (!isHome) {
       setScrolled(true);
@@ -48,19 +51,21 @@ export const BentoHeader = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isHome]);
 
+  const { language, toggleLanguage, t } = useLanguage();
+
   const navLinks = [
-    { label: "Accueil", href: "/" },
-    { label: "À propos", href: "/a-propos" },
-    { label: "Services", href: "/services" },
-    { label: "Réalisations", href: "/realisations" },
-    { label: "Actualités", href: "/actualites" },
-    { label: "Contact", href: "/contact" },
+    { label: t("accueil"), href: "/" },
+    { label: t("apropos"), href: "/a-propos" },
+    { label: t("services"), href: "/services" },
+    { label: t("realisations"), href: "/realisations" },
+    { label: t("actualites"), href: "/actualites" },
+    { label: t("contact"), href: "/contact" },
   ];
 
   return (
     <>
       <header className={`fixed top-0 left-0 right-0 z-50 h-16 sm:h-20 md:h-24 pointer-events-none transition-all duration-300 ${scrolled ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}>
-        <div className={`relative h-full transition-colors duration-500 ${scrolled && isHome ? 'bg-[#050A18]/90 backdrop-blur-2xl' : !isHome ? 'bg-[#050A18]' : ''}`}>
+        <div className={`relative h-full transition-colors duration-500 ${scrolled && isHome ? 'bg-[#111c2f]/90 backdrop-blur-2xl' : isBlueHeader ? 'bg-[#4471c4]' : !isHome ? 'bg-[#111c2f]' : ''}`}>
           {/* Top Left Notch (Logo) */}
           <div className="absolute top-0 left-0 w-[180px] sm:w-[240px] md:w-[300px] h-16 sm:h-20 md:h-24 bg-white rounded-br-[32px] sm:rounded-br-[40px] pointer-events-auto shadow-sm">
             <div className="absolute top-0 -right-[40px] w-10 h-10 hidden sm:block">
@@ -108,13 +113,16 @@ export const BentoHeader = () => {
               <InvertedCorner rotate={270} />
             </div>
             <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 h-full px-2">
-              <button className="w-9 h-9 sm:w-10 sm:h-10 md:w-14 md:h-14 rounded-full border border-gray-100 flex flex-col items-center justify-center text-[#050A18] hover:bg-gray-50 transition-colors shadow-sm group">
+              <button 
+                onClick={toggleLanguage}
+                className="w-9 h-9 sm:w-10 sm:h-10 md:w-14 md:h-14 rounded-full border border-gray-100 flex flex-col items-center justify-center text-[#111c2f] hover:bg-gray-50 transition-colors shadow-sm group"
+              >
                 <Globe size={18} weight="bold" className="group-hover:rotate-12 transition-transform md:hidden" />
                 <Globe size={20} weight="bold" className="group-hover:rotate-12 transition-transform hidden md:block" />
-                <span className="text-[6px] md:text-[7px] font-black mt-0.5">FR</span>
+                <span className="text-[6px] md:text-[7px] font-black mt-0.5">{language}</span>
               </button>
-              <Link href="/connexion" className="flex items-center gap-2 sm:gap-3 bg-[#050A18] text-white px-4 sm:pl-6 md:pl-8 sm:pr-4 h-9 sm:h-10 md:h-14 rounded-full hover:scale-105 transition-transform group">
-                <span className="font-heading text-[8px] sm:text-[10px] md:text-xs font-bold uppercase tracking-widest hidden sm:inline">Connexion</span>
+              <Link href="/connexion" className="flex items-center gap-2 sm:gap-3 bg-[#111c2f] text-white px-4 sm:pl-6 md:pl-8 sm:pr-4 h-9 sm:h-10 md:h-14 rounded-full hover:scale-105 transition-transform group">
+                <span className="font-heading text-[8px] sm:text-[10px] md:text-xs font-bold uppercase tracking-widest hidden sm:inline">{t("connexion")}</span>
                 <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-9 md:h-9 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-[#4471c4]">
                   <ArrowUpRight size={10} weight="bold" className="md:hidden" />
                   <ArrowUpRight size={12} weight="bold" className="hidden md:block" />

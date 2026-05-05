@@ -3,53 +3,56 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { ArrowDownRight } from "@phosphor-icons/react";
-
-const steps = [
-  {
-    number: "01",
-    title: "Performances Internes",
-    desc: "Amélioration significative de la productivité et de l'efficacité opérationnelle de vos équipes.",
-    theme: "yellow",
-  },
-  {
-    number: "02",
-    title: "Certifications ISO",
-    desc: "Accompagnement réussi jusqu'à l'obtention et le renouvellement de vos certificats internationaux.",
-    theme: "gray",
-  },
-  {
-    number: "03",
-    title: "Optimisation Processus",
-    desc: "Structuration et fluidification des processus métier pour une meilleure agilité organisationnelle.",
-    theme: "navy",
-  },
-  {
-    number: "04",
-    title: "Compétences",
-    desc: "Renforcement durable des capacités managériales et techniques des collaborateurs.",
-    theme: "gray",
-  },
-];
+import { useLanguage } from "@/context/LanguageContext";
 
 export const TimelineJourney = () => {
+  const { t } = useLanguage();
+
+  const steps = [
+    {
+      number: "01",
+      title: t("perf_internes"),
+      desc: t("perf_internes_desc"),
+      theme: "yellow",
+    },
+    {
+      number: "02",
+      title: t("certifications_iso_title"),
+      desc: t("certifications_iso_desc"),
+      theme: "gray",
+    },
+    {
+      number: "03",
+      title: t("optimisation_processus_title"),
+      desc: t("optimisation_processus_desc"),
+      theme: "navy",
+    },
+    {
+      number: "04",
+      title: t("competences_title"),
+      desc: t("competences_desc"),
+      theme: "gray",
+    },
+  ];
+
   return (
     <section className="py-20 md:py-32 bg-[#4471c4] w-full overflow-hidden relative">
       <div className="max-w-[1240px] mx-auto px-5 sm:px-8 relative z-10">
         {/* Header Section */}
         <div className="mb-16 md:mb-24">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col items-start text-left"
           >
             <span className="font-heading text-xs font-bold tracking-[0.3em] uppercase text-[#2D3047] mb-6 block w-full text-left">
-              RÉSULTATS / IMPACT
+              {t("resultats_impact")}
             </span>
             <h2 className="font-heading font-black text-5xl md:text-7xl lg:text-[100px] leading-[0.85] tracking-tighter text-white uppercase w-full text-left">
-              Résultats <br />
-              <span className="text-[#2D3047]">concrets.</span>
+              {t("resultats_title")} <br />
+              <span className="text-[#2D3047]">{t("concrets_title")}</span>
             </h2>
           </motion.div>
         </div>
@@ -59,7 +62,6 @@ export const TimelineJourney = () => {
           {steps.map((step, index) => {
             const isYellow = step.theme === "yellow";
             const isNavy = step.theme === "navy";
-            const isGray = step.theme === "gray";
 
             let bgClass = "";
             let textClass = "";
@@ -82,10 +84,10 @@ export const TimelineJourney = () => {
             return (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 100 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true, amount: 0.1 }}
+                transition={{ duration: 0.8, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
                 className={`${bgClass} rounded-[2.5rem] p-8 md:p-10 flex flex-col min-h-[450px] relative overflow-hidden group cursor-pointer transition-all duration-500 hover:scale-[1.02]`}
               >
 
@@ -102,7 +104,7 @@ export const TimelineJourney = () => {
                   <div className="mt-auto">
                     <div className={`text-8xl md:text-9xl font-black tracking-tighter leading-none -ml-2 opacity-100 ${textClass}`}>
                       {step.number}
-                      <div className={`h-1.5 w-16 mt-2 ${isYellow ? "bg-white" : isGray ? "bg-black" : "bg-white/20"}`} />
+                      <div className={`h-1.5 w-16 mt-2 ${isYellow ? "bg-white" : step.theme === "gray" ? "bg-black" : "bg-white/20"}`} />
                     </div>
                   </div>
                 </div>

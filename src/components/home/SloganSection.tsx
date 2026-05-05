@@ -3,8 +3,11 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { ArrowUpRight } from "@phosphor-icons/react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export const SloganSection = () => {
+    const { t } = useLanguage();
+
     return (
         <section className="py-24 md:py-32 bg-[#F9F9F9] w-full overflow-hidden relative">
             {/* Subtle Dot Grid Pattern */}
@@ -13,8 +16,6 @@ export const SloganSection = () => {
             
             <div className="max-w-[1240px] mx-auto px-5 sm:px-8 relative z-10">
                 
-
-
                 {/* Top Header Row */}
                 <div className="flex flex-col lg:flex-row justify-between items-start gap-16 lg:gap-32 mb-20 lg:mb-32">
                     <motion.div
@@ -25,11 +26,11 @@ export const SloganSection = () => {
                         className="lg:w-[55%] flex flex-col items-start text-left"
                     >
                         <span className="font-heading text-xs font-bold tracking-[0.3em] uppercase text-[#4471c4] mb-6 block w-full text-left">
-                            VALEUR AJOUTÉE
+                            {t("valeur_ajoutee")}
                         </span>
                         <h2 className="font-heading font-black text-5xl md:text-7xl lg:text-[100px] leading-[0.85] tracking-tighter text-meb-dark uppercase w-full text-left">
-                            Pourquoi <br />
-                            <span className="text-[#4471c4]">Nous choisir.</span>
+                            {t("pourquoi")} <br />
+                            <span className="text-[#4471c4]">{t("choisir_nous")}</span>
                         </h2>
                     </motion.div>
                     
@@ -42,15 +43,15 @@ export const SloganSection = () => {
                     >
                         <div>
                             <p className="font-body text-[#2D3047] text-xl md:text-2xl leading-tight mb-6 font-medium uppercase tracking-tighter">
-                                Une approche orientée impact pour garantir votre succès.
+                                {t("approche_impact")}
                             </p>
                             <p className="font-body text-[#2D3047]/70 text-base leading-relaxed text-justify">
-                                Nous combinons expertise de haut niveau et méthodologies agiles pour transformer vos processus en leviers de croissance.
+                                {t("combinaison_expertise")}
                             </p>
                         </div>
                         <div className="flex flex-col items-start gap-6">
                             <button className="bg-[#4471c4] text-white px-8 py-5 flex items-center gap-4 hover:bg-[#4471c4] transition-all duration-500 rounded-full group shadow-xl">
-                                <span className="font-heading font-bold uppercase text-[10px] tracking-widest">Découvrir notre vision</span>
+                                <span className="font-heading font-bold uppercase text-[10px] tracking-widest">{t("decouvrir_vision")}</span>
                                 <div className="bg-[#4471c4] text-white p-1 rounded-full group-hover:rotate-45 transition-transform duration-500">
                                     <ArrowUpRight size={14} weight="bold" />
                                 </div>
@@ -83,7 +84,7 @@ export const SloganSection = () => {
                         <div className="absolute bottom-0 left-0 flex flex-wrap md:flex-nowrap items-stretch">
                             <div className="bg-[#2D3047] p-6 md:p-10 text-white min-w-[180px]">
                                 <div className="font-heading font-black text-4xl md:text-5xl mb-2">100%</div>
-                                <div className="text-xs uppercase tracking-widest text-white/50">Engagement Résultats</div>
+                                <div className="text-xs uppercase tracking-widest text-white/50">{t("engagement_resultats")}</div>
                             </div>
                             <div className="bg-[#4471c4] p-6 md:p-10 text-white flex items-center justify-center min-w-[80px] hover:bg-[#3558a0] transition-colors duration-500 cursor-pointer">
                                 <ArrowUpRight size={32} weight="bold" />
@@ -121,10 +122,10 @@ export const SloganSection = () => {
                         >
                             <ul className="space-y-4 w-full">
                                 {[
-                                    "Experts expérimentés et certifiés", 
-                                    "Méthodologie pratique et orientée résultats", 
-                                    "Accompagnement personnalisé",
-                                    "Suivi jusqu'à obtention des résultats"
+                                    t("expert_certifies"), 
+                                    t("methodologie_pratique"), 
+                                    t("accompagnement_perso"),
+                                    t("suivi_jusqua_resultat")
                                 ].map((item, i) => (
                                     <li key={i} className="flex items-center gap-4 text-meb-dark font-heading font-bold uppercase text-[11px] tracking-widest leading-tight">
                                         <div className="w-2 h-2 bg-[#4471c4] rounded-full flex-shrink-0" />

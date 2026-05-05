@@ -22,6 +22,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { LanguageProvider } from "@/context/LanguageContext";
+
 export default function RootLayout({
   children,
 }: {
@@ -30,10 +32,12 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${poppins.variable}`}>
       <body className={`${poppins.className} min-h-screen flex flex-col antialiased`}>
-        <BentoHeader />
-        <main className="flex-1 flex flex-col">{children}</main>
-        <Footer />
-        <WhatsAppButton />
+        <LanguageProvider>
+          <BentoHeader />
+          <main className="flex-1 flex flex-col">{children}</main>
+          <Footer />
+          <WhatsAppButton />
+        </LanguageProvider>
       </body>
     </html>
   );
