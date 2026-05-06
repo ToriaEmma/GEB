@@ -16,6 +16,7 @@ export interface Article {
   is_featured: boolean;
   likes?: number;
   published_at?: string;
+  updated_at?: string;
   created_at?: string;
 }
 

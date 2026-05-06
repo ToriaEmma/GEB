@@ -13,6 +13,7 @@ export interface Project {
   date_string: string;
   is_featured: boolean;
   status: 'draft' | 'pending_validation' | 'approved' | 'rejected';
+  updated_at?: string;
   created_at?: string;
 }
 
