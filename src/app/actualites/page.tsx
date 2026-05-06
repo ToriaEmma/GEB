@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowUpRight, Heart, ShareNetwork, Tag } from '@phosphor-icons/react';
-import { articles, formatDate, type Category } from './data';
+import { ArrowUpRight, Heart, Tag } from '@phosphor-icons/react';
+import { articleService, type Article } from '@/lib/services/articles';
+import { formatDate, type Category } from './data';
 import { useLanguage } from '@/context/LanguageContext';
 
 const ALL_CATEGORIES: (Category | 'Tous')[] = ['Tous', 'Normes ISO', 'Audit', 'Certification', 'Conseil', 'Digital'];
@@ -22,8 +23,24 @@ export default function ActualitesPage() {
     const { t, language } = useLanguage();
     const containerRef = useRef(null);
     const [activeCategory, setActiveCategory] = useState<Category | 'Tous'>('Tous');
+    const [dbArticles, setDbArticles] = useState<Article[]>([]);
+    const [loading, setLoading] = useState(true);
     const { scrollYProgress } = useScroll({ target: containerRef, offset: ['start end', 'end start'] });
     const xMove = useTransform(scrollYProgress, [0, 1], ['-20%', '20%']);
+
+    useEffect(() => {
+        const fetchArticles = async () => {
+            try {
+                const data = await articleService.getByStatus('approved');
+                setDbArticles(data);
+            } catch (err) {
+                console.error("Error fetching public articles:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchArticles();
+    }, []);
 
     const ALL_CATEGORIES_LOCALIZED = [
         { id: 'Tous', label: language === 'FR' ? 'Tous' : 'All' },
@@ -39,9 +56,9 @@ export default function ActualitesPage() {
         return found ? found.label : cat;
     };
 
-    const filtered = activeCategory === 'Tous' ? articles : articles.filter(a => a.category === activeCategory);
-    const featured = filtered.find(a => a.featured) || filtered[0];
-    const rest = filtered.filter(a => a.slug !== featured?.slug);
+    const filtered = activeCategory === 'Tous' ? dbArticles : dbArticles.filter(a => a.category === activeCategory);
+    const featured = filtered.find(a => a.is_featured) || filtered[0];
+    const rest = filtered.filter(a => a.id !== featured?.id);
 
     return (
         <main ref={containerRef} className="min-h-screen bg-[#111c2f] text-white pt-32 pb-32 overflow-hidden">
@@ -95,7 +112,11 @@ export default function ActualitesPage() {
                         transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
                         className="lg:col-span-7"
                     >
-                        {featured && (
+                        {loading ? (
+                            <div className="w-full h-[400px] bg-white/5 rounded-[40px] animate-pulse flex items-center justify-center">
+                                <div className="w-10 h-10 border-2 border-meb-accent border-t-transparent rounded-full animate-spin" />
+                            </div>
+                        ) : featured ? (
                             <Link href={`/actualites/${featured.slug}`} className="block group w-full">
                                 <motion.div 
                                     className="relative bg-[#4471c4] rounded-[40px] p-8 md:p-10 h-[400px] flex flex-col justify-between overflow-hidden inverted-radius-tr"
@@ -105,18 +126,22 @@ export default function ActualitesPage() {
                                     <div className="relative z-20 flex justify-between items-start">
                                         <div className="max-w-[350px]">
                                             <p className="text-[10px] font-black uppercase tracking-widest text-white/80 mb-3">{getCategoryLabel(featured.category)}</p>
-                                            <h3 className="text-2xl md:text-3xl font-heading font-black uppercase leading-tight text-white">{language === 'FR' ? featured.title : featured.titleEn}</h3>
+                                            <h3 className="text-2xl md:text-3xl font-heading font-black uppercase leading-tight text-white">{language === 'FR' ? featured.title_fr : featured.title_en}</h3>
                                         </div>
                                     </div>
 
                                     <div className="absolute inset-x-0 bottom-0 top-32 overflow-hidden flex items-end justify-center">
                                         <div className="relative w-[120%] h-[120%] -ml-[10%]">
-                                          <Image 
-                                              src={featured.image} 
-                                              alt={featured.title} 
-                                              fill 
-                                              className="object-cover object-top scale-105 group-hover:scale-100 transition-transform duration-700 mix-blend-multiply opacity-80" 
-                                          />
+                                          {featured.image_url ? (
+                                            <Image 
+                                                src={featured.image_url} 
+                                                alt={featured.title_fr} 
+                                                fill 
+                                                className="object-cover object-top scale-105 group-hover:scale-100 transition-transform duration-700 mix-blend-multiply opacity-80" 
+                                            />
+                                          ) : (
+                                            <div className="absolute inset-0 bg-meb-accent/20" />
+                                          )}
                                         </div>
                                     </div>
 
@@ -128,7 +153,7 @@ export default function ActualitesPage() {
                                     </div>
                                 </motion.div>
                             </Link>
-                        )}
+                        ) : null}
                     </motion.div>
 
                     {/* Bottom Left: Filters */}
@@ -175,50 +200,56 @@ export default function ActualitesPage() {
                         className="lg:col-span-8 lg:col-start-5 flex flex-col justify-end"
                     >
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {rest.slice(0, 3).map((article, idx) => {
-                                const colors = [
-                                    { bg: 'bg-[#ffb7d5]', text: 'text-[#d63384]' }, // Pink from A Propos
-                                    { bg: 'bg-white', text: 'text-[#111c2f]' }, // White
-                                    { bg: 'bg-[#4471c4]', text: 'text-white' }, // Blue
-                                ];
-                                const color = colors[idx % 3];
+                            {loading ? (
+                                [1, 2, 3].map(i => (
+                                    <div key={i} className="bg-white/5 h-[360px] rounded-3xl animate-pulse" />
+                                ))
+                            ) : (
+                                rest.map((article, idx) => {
+                                    const colors = [
+                                        { bg: 'bg-[#ffb7d5]', text: 'text-[#d63384]' },
+                                        { bg: 'bg-white', text: 'text-[#111c2f]' },
+                                        { bg: 'bg-[#4471c4]', text: 'text-white' },
+                                    ];
+                                    const color = colors[idx % 3];
 
-                                return (
-                                    <Link href={`/actualites/${article.slug}`} key={article.slug} className="block group">
-                                        <motion.div 
-                                            className={`relative ${color.bg} p-8 h-[360px] flex flex-col justify-between overflow-hidden inverted-radius-tr-sm`}
-                                            whileHover={{ scale: 0.96 }}
-                                            transition={{ duration: 0.4 }}
-                                        >
+                                    return (
+                                        <Link href={`/actualites/${article.slug}`} key={article.id} className="block group">
+                                            <motion.div 
+                                                className={`relative ${color.bg} p-8 h-[360px] flex flex-col justify-between overflow-hidden inverted-radius-tr-sm`}
+                                                whileHover={{ scale: 0.96 }}
+                                                transition={{ duration: 0.4 }}
+                                            >
 
-                                            <div className="relative z-20 sm:mr-20">
-                                                <p className={`text-[10px] font-black uppercase tracking-widest ${color.text} mb-2 opacity-60`}>{getCategoryLabel(article.category)}</p>
-                                            </div>
-                                            
-                                            <div className="absolute inset-0 top-12 opacity-10 mix-blend-overlay pointer-events-none grayscale">
-                                                <Image src={article.image} alt="" fill className="object-cover" />
-                                            </div>
-
-                                            <div className="relative z-20 mt-auto">
-                                                <h3 className={`text-xl font-heading font-black uppercase leading-[1.2] ${color.text} mb-6 line-clamp-3`}>{language === 'FR' ? article.title : article.titleEn}</h3>
-                                                
-                                                <div className="flex items-end justify-between">
-                                                    <div className="flex items-center gap-2">
-                                                        <Heart size={18} weight="fill" className={`${color.text} opacity-40`} />
-                                                        <span className={`text-[11px] font-black uppercase ${color.text} opacity-60`}>{article.likes}</span>
-                                                    </div>
-                                                    <ArrowUpRight size={32} weight="light" className={`${color.text} group-hover:scale-125 transition-transform origin-bottom-right`} />
+                                                <div className="relative z-20 sm:mr-20">
+                                                    <p className={`text-[10px] font-black uppercase tracking-widest ${color.text} mb-2 opacity-60`}>{getCategoryLabel(article.category)}</p>
                                                 </div>
-                                            </div>
-                                        </motion.div>
-                                    </Link>
-                                )
-                            })}
+                                                
+                                                <div className="absolute inset-0 top-12 opacity-10 mix-blend-overlay pointer-events-none grayscale">
+                                                    {article.image_url && <Image src={article.image_url} alt="" fill className="object-cover" />}
+                                                </div>
+
+                                                <div className="relative z-20 mt-auto">
+                                                    <h3 className={`text-xl font-heading font-black uppercase leading-[1.2] ${color.text} mb-6 line-clamp-3`}>{language === 'FR' ? article.title_fr : article.title_en}</h3>
+                                                    
+                                                    <div className="flex items-end justify-between">
+                                                        <div className="flex items-center gap-2">
+                                                            <Heart size={18} weight="fill" className={`${color.text} opacity-40`} />
+                                                            <span className={`text-[11px] font-black uppercase ${color.text} opacity-60`}>0</span>
+                                                        </div>
+                                                        <ArrowUpRight size={32} weight="light" className={`${color.text} group-hover:scale-125 transition-transform origin-bottom-right`} />
+                                                    </div>
+                                                </div>
+                                            </motion.div>
+                                        </Link>
+                                    )
+                                })
+                            )}
                         </div>
                     </motion.div>
                 </div>
 
-                {filtered.length === 0 && (
+                {(!loading && filtered.length === 0) && (
                     <div className="py-32 text-center mt-12 border border-white/10 rounded-3xl">
                         <Tag size={48} className="text-white/20 mx-auto mb-4" />
                         <p className="text-white/40 font-black uppercase tracking-widest text-sm">{language === 'FR' ? "Aucun article dans cette catégorie" : "No articles in this category"}</p>

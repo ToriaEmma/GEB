@@ -14,11 +14,44 @@ import {
 } from '@phosphor-icons/react';
 
 import { useLanguage } from '@/context/LanguageContext';
+import { messageService } from '@/lib/services/messages';
 
 export default function ContactPage() {
     const { t, language } = useLanguage();
     const [selectedService, setSelectedService] = useState('website');
     const [selectedBudget, setSelectedBudget] = useState('3-5');
+    
+    const [fullName, setFullName] = useState('');
+    const [email, setEmail] = useState('');
+    const [message, setMessage] = useState('');
+    const [isSending, setIsSending] = useState(false);
+    const [sent, setSent] = useState(false);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!fullName || !email || !message) return;
+        
+        setIsSending(true);
+        try {
+            await messageService.send({
+                full_name: fullName,
+                email,
+                message,
+                subject: `Projet: ${selectedService} - Budget: ${selectedBudget}`,
+                status: 'unread'
+            });
+            setSent(true);
+            setFullName('');
+            setEmail('');
+            setMessage('');
+            setTimeout(() => setSent(false), 5000);
+        } catch (err) {
+            console.error(err);
+            alert("Erreur lors de l'envoi du message");
+        } finally {
+            setIsSending(false);
+        }
+    };
     const containerRef = useRef(null);
     const { scrollYProgress } = useScroll({
         target: containerRef,
@@ -184,31 +217,61 @@ export default function ContactPage() {
                             </div>
 
                             {/* Card 04 (Form) */}
-                            <div className="bg-white border border-gray-100 rounded-[30px] p-8 flex-1 flex flex-col shadow-sm">
+                            <form onSubmit={handleSubmit} className="bg-white border border-gray-100 rounded-[30px] p-8 flex-1 flex flex-col shadow-sm">
                                 <span className="text-xl font-heading font-black opacity-30 mb-10 text-[#111c2f]">04</span>
-                                <div className="space-y-8 flex-1">
+                                <div className="space-y-6 flex-1">
                                     <div className="space-y-2">
                                         <label className="text-[9px] font-black uppercase tracking-widest opacity-80 text-[#111c2f]">{t('nom_complet')}</label>
                                         <input 
                                             type="text"
+                                            value={fullName}
+                                            onChange={(e) => setFullName(e.target.value)}
+                                            required
                                             placeholder={t('nom_complet').toUpperCase()}
-                                            className="w-full bg-transparent border-b border-gray-100 py-4 text-xl font-heading font-black uppercase tracking-tighter focus:outline-none focus:border-[#4471c4] transition-colors placeholder:text-gray-400 text-[#111c2f]"
+                                            className="w-full bg-transparent border-b border-gray-100 py-3 text-lg font-heading font-black uppercase tracking-tighter focus:outline-none focus:border-[#4471c4] transition-colors placeholder:text-gray-400 text-[#111c2f]"
                                         />
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-[9px] font-black uppercase tracking-widest opacity-80 text-[#111c2f]">{t('votre_email_pro')}</label>
                                         <input 
                                             type="email"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            required
                                             placeholder="VOTRE@EMAIL.COM"
-                                            className="w-full bg-transparent border-b border-gray-100 py-4 text-xl font-heading font-black uppercase tracking-tighter focus:outline-none focus:border-[#4471c4] transition-colors placeholder:text-gray-400 text-[#111c2f]"
+                                            className="w-full bg-transparent border-b border-gray-100 py-3 text-lg font-heading font-black uppercase tracking-tighter focus:outline-none focus:border-[#4471c4] transition-colors placeholder:text-gray-400 text-[#111c2f]"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[9px] font-black uppercase tracking-widest opacity-80 text-[#111c2f]">Votre Message</label>
+                                        <textarea 
+                                            value={message}
+                                            onChange={(e) => setMessage(e.target.value)}
+                                            required
+                                            placeholder="DÉTAILLEZ VOTRE DEMANDE ICI..."
+                                            className="w-full bg-transparent border-b border-gray-100 py-3 text-sm font-medium focus:outline-none focus:border-[#4471c4] transition-colors placeholder:text-gray-400 text-[#111c2f] min-h-[100px] resize-none"
                                         />
                                     </div>
                                 </div>
-                                <button className="mt-12 w-full bg-[#4471c4] text-white py-6 rounded-2xl font-heading font-black uppercase tracking-[0.4em] text-[10px] hover:bg-[#111c2f] transition-all shadow-xl shadow-[#4471c4]/20 flex items-center justify-center gap-4 group">
-                                    {t('envoyer_message')}
-                                    <div className="w-2 h-2 rounded-full bg-white group-hover:scale-150 transition-transform" />
+                                <button 
+                                    type="submit"
+                                    disabled={isSending}
+                                    className={`mt-8 w-full py-6 rounded-2xl font-heading font-black uppercase tracking-[0.4em] text-[10px] transition-all flex items-center justify-center gap-4 group shadow-xl ${
+                                        sent ? 'bg-emerald-500 text-white' : 'bg-[#4471c4] text-white hover:bg-[#111c2f] shadow-[#4471c4]/20'
+                                    }`}
+                                >
+                                    {isSending ? (
+                                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                    ) : sent ? (
+                                        "Message Envoyé !"
+                                    ) : (
+                                        <>
+                                            {t('envoyer_message')}
+                                            <div className="w-2 h-2 rounded-full bg-white group-hover:scale-150 transition-transform" />
+                                        </>
+                                    )}
                                 </button>
-                            </div>
+                            </form>
                         </motion.div>
                     </div>
 

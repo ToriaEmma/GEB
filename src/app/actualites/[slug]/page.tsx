@@ -17,8 +17,11 @@ import {
     Check,
     Warning,
 } from '@phosphor-icons/react';
-import { articles, formatDate, getArticleBySlug } from '../data';
+import { articles, formatDate } from '../data';
 import { useLanguage } from '@/context/LanguageContext';
+import { articleService, Article } from '@/lib/services/articles';
+import { articleDetailService } from '@/lib/services/articleDetail';
+import { commentService, Comment as DbComment } from '@/lib/services/comments';
 
 interface Comment {
     id: string;
@@ -163,25 +166,88 @@ function CommentForm({ onSubmit, parentId, onCancel }: {
 export default function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
     const { t, language } = useLanguage();
     const { slug } = use(params);
-    const article = getArticleBySlug(slug);
-
+    const [dbArticle, setDbArticle] = useState<Article | null>(null);
+    const [loading, setLoading] = useState(true);
     const [liked, setLiked] = useState(false);
-    const [likeCount, setLikeCount] = useState(article?.likes ?? 0);
+    const [likeCount, setLikeCount] = useState(0);
     const [comments, setComments] = useState<Comment[]>([]);
     const [replyingTo, setReplyingTo] = useState<string | null>(null);
     const [copied, setCopied] = useState(false);
 
+    const localFormatDate = (dateStr: string) => {
+        return new Date(dateStr).toLocaleDateString(language === 'FR' ? 'fr-FR' : 'en-US', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+        });
+    };
+
     useEffect(() => {
-        if (typeof window !== 'undefined' && article) {
-            const savedLike = localStorage.getItem(`like-${article.slug}`);
+        const fetchArticle = async () => {
+            try {
+                const data = await articleDetailService.getBySlug(slug);
+                setDbArticle(data);
+                setLikeCount(data.likes || 0);
+
+                // Fetch comments for this article
+                if (data.id) {
+                    const dbComments = await commentService.getByArticle(data.id);
+                    
+                    // Create a map for easy access
+                    const commentMap: Record<string, Comment> = {};
+                    dbComments.forEach(c => {
+                        commentMap[c.id!] = {
+                            id: c.id!,
+                            name: c.name,
+                            content: c.content,
+                            date: localFormatDate(c.created_at!),
+                            status: c.status as 'pending' | 'approved',
+                            replies: []
+                        };
+                    });
+
+                    // Build the tree
+                    const rootComments: Comment[] = [];
+                    dbComments.forEach(c => {
+                        if (c.parent_id && commentMap[c.parent_id]) {
+                            commentMap[c.parent_id].replies.push(commentMap[c.id!]);
+                        } else {
+                            rootComments.push(commentMap[c.id!]);
+                        }
+                    });
+
+                    setComments(rootComments);
+                }
+            } catch (err) {
+                console.error("Error fetching article detail:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchArticle();
+    }, [slug]);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined' && dbArticle) {
+            const savedLike = localStorage.getItem(`like-${dbArticle.slug}`);
             if (savedLike === 'true') {
                 setLiked(true);
-                setLikeCount(article.likes + 1);
             }
         }
-    }, [article]);
+    }, [dbArticle]);
 
-    if (!article) {
+    if (loading) {
+        return (
+            <main className="min-h-screen bg-white flex items-center justify-center">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-12 h-12 border-4 border-[#111c2f] border-t-transparent rounded-full animate-spin" />
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#111c2f]">{language === 'FR' ? 'Chargement de l\'article...' : 'Loading article...'}</p>
+                </div>
+            </main>
+        );
+    }
+
+    if (!dbArticle) {
         return (
             <main className="min-h-screen bg-white flex items-center justify-center">
                 <div className="text-center">
@@ -194,44 +260,63 @@ export default function ArticlePage({ params }: { params: Promise<{ slug: string
         );
     }
 
-    const localFormatDate = (dateStr: string) => {
-        return new Date(dateStr).toLocaleDateString(language === 'FR' ? 'fr-FR' : 'en-US', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-        });
-    };
 
-    const handleLike = () => {
+    const handleLike = async () => {
+        if (!dbArticle?.id) return;
+        
         const newLiked = !liked;
+        let newCount = newLiked ? (likeCount + 1) : (likeCount - 1);
+        newCount = Math.max(0, newCount); // Sécurité : jamais en dessous de 0
+        
         setLiked(newLiked);
-        setLikeCount(prev => newLiked ? prev + 1 : prev - 1);
-        localStorage.setItem(`like-${article.slug}`, String(newLiked));
+        setLikeCount(newCount);
+        localStorage.setItem(`like-${dbArticle.slug}`, String(newLiked));
+
+        try {
+            await articleService.update(dbArticle.id, { likes: newCount });
+        } catch (err) {
+            console.error("Error updating likes in DB:", err);
+        }
     };
 
-    const handleAddComment = (name: string, content: string, parentId?: string) => {
-        const newComment: Comment = {
-            id: Date.now().toString(),
-            name,
-            content,
-            date: localFormatDate(new Date().toISOString()),
-            status: 'pending',
-            replies: [],
-        };
+    const handleAddComment = async (name: string, content: string, parentId?: string) => {
+        if (!dbArticle?.id) return;
 
-        if (parentId) {
-            setComments(prev => prev.map(c => {
-                if (c.id === parentId) return { ...c, replies: [...c.replies, newComment] };
-                return { ...c, replies: c.replies.map(r => r.id === parentId ? { ...r, replies: [...r.replies, newComment] } : r) };
-            }));
-        } else {
-            setComments(prev => [...prev, newComment]);
+        try {
+            const newComment = await commentService.create({
+                article_id: dbArticle.id,
+                parent_id: parentId,
+                name,
+                content,
+                status: 'pending'
+            });
+
+            const localComment: Comment = {
+                id: newComment.id!,
+                name: newComment.name,
+                content: newComment.content,
+                date: localFormatDate(new Date().toISOString()),
+                status: 'pending',
+                replies: [],
+            };
+
+            if (parentId) {
+                setComments(prev => prev.map(c => {
+                    if (c.id === parentId) return { ...c, replies: [...c.replies, localComment] };
+                    return { ...c, replies: c.replies.map(r => r.id === parentId ? { ...r, replies: [...r.replies, localComment] } : r) };
+                }));
+            } else {
+                setComments(prev => [...prev, localComment]);
+            }
+            setReplyingTo(null);
+        } catch (err) {
+            console.error("Error adding comment:", err);
+            alert("Erreur lors de l'envoi du commentaire.");
         }
-        setReplyingTo(null);
     };
 
     const pageUrl = typeof window !== 'undefined' ? window.location.href : '';
-    const shareText = encodeURIComponent(language === 'FR' ? article.title : article.titleEn);
+    const shareText = encodeURIComponent(language === 'FR' ? dbArticle.title_fr : dbArticle.title_en);
     const shareUrl = encodeURIComponent(pageUrl);
 
     const handleCopy = () => {
@@ -240,7 +325,7 @@ export default function ArticlePage({ params }: { params: Promise<{ slug: string
         setTimeout(() => setCopied(false), 2000);
     };
 
-    const relatedArticles = articles.filter(a => a.slug !== article.slug && a.category === article.category).slice(0, 2);
+    const relatedArticles = articles.filter(a => a.slug !== dbArticle.slug && a.category === dbArticle.category).slice(0, 2);
 
     return (
         <main className="min-h-screen bg-[white] text-[#111c2f] selection:bg-[#4471c4] selection:text-white pt-32 pb-20">
@@ -273,7 +358,7 @@ export default function ArticlePage({ params }: { params: Promise<{ slug: string
                     transition={{ duration: 1 }}
                     className="text-5xl md:text-7xl lg:text-[7rem] font-heading font-black uppercase tracking-tight leading-[1.1] text-[#111c2f] max-w-[1400px]"
                 >
-                    {language === 'FR' ? article.title : article.titleEn}
+                    {language === 'FR' ? dbArticle.title_fr : dbArticle.title_en}
                 </motion.h1>
                 
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start mt-24 md:mt-40">
@@ -290,7 +375,7 @@ export default function ArticlePage({ params }: { params: Promise<{ slug: string
                             transition={{ duration: 1, delay: 0.3 }}
                             className="text-2xl md:text-4xl lg:text-[40px] font-medium leading-[1.3] text-[#111c2f] max-w-4xl"
                         >
-                            {language === 'FR' ? article.excerpt : article.excerptEn}
+                            {language === 'FR' ? dbArticle.excerpt_fr : dbArticle.excerpt_en}
                         </motion.p>
                     </div>
                 </div>
@@ -305,25 +390,29 @@ export default function ArticlePage({ params }: { params: Promise<{ slug: string
                         <div className="grid grid-cols-3 gap-6 mb-12">
                             <div>
                                 <p className="text-[8px] font-black uppercase tracking-widest text-[#111c2f]/40 mb-2">{t('categorie_label')}</p>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-[#111c2f]">{article.category}</p>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-[#111c2f]">{dbArticle.category}</p>
                             </div>
                             <div>
                                 <p className="text-[8px] font-black uppercase tracking-widest text-[#111c2f]/40 mb-2">{t('auteur_label')}</p>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-[#111c2f]">{article.author}</p>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-[#111c2f]">Business Dev #1</p>
                             </div>
                             <div>
                                 <p className="text-[8px] font-black uppercase tracking-widest text-[#111c2f]/40 mb-2">DATE</p>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-[#111c2f]">{localFormatDate(article.date)}</p>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-[#111c2f]">{dbArticle.created_at ? localFormatDate(dbArticle.created_at) : ''}</p>
                             </div>
                         </div>
 
                         <div className="relative aspect-square w-full max-w-sm bg-gray-50 overflow-hidden grayscale contrast-[1.1] mix-blend-multiply rounded-[40px]">
-                            <Image 
-                                src={article.image} 
-                                alt={language === 'FR' ? article.title : article.titleEn} 
-                                fill 
-                                className="object-cover" 
-                            />
+                            {dbArticle.image_url ? (
+                                <Image 
+                                    src={dbArticle.image_url} 
+                                    alt={language === 'FR' ? dbArticle.title_fr : dbArticle.title_en} 
+                                    fill 
+                                    className="object-cover" 
+                                />
+                            ) : (
+                                <div className="absolute inset-0 bg-meb-accent/20" />
+                            )}
                         </div>
                     </div>
 
@@ -335,7 +424,7 @@ export default function ArticlePage({ params }: { params: Promise<{ slug: string
                             transition={{ duration: 1, delay: 0.5 }}
                             className="columns-1 md:columns-2 gap-12 lg:gap-16 text-[#111c2f]"
                         >
-                            {(language === 'FR' ? article.content : article.contentEn).trim().split('\n').map((line, i) => {
+                            {(language === 'FR' ? dbArticle.content_fr : dbArticle.content_en).trim().split('\n').map((line, i) => {
                                 if (line.startsWith('## ')) return <h2 key={i} className="text-xl font-heading font-black mt-8 mb-4 break-inside-avoid">{line.slice(3)}</h2>;
                                 if (line.startsWith('### ')) return <h3 key={i} className="text-base font-heading font-black mt-6 mb-3 break-inside-avoid">{line.slice(4)}</h3>;
                                 if (line.startsWith('> ')) return <blockquote key={i} className="pl-4 py-1 my-6 border-l-2 border-[#111c2f] text-sm font-medium italic break-inside-avoid">{line.slice(2)}</blockquote>;
