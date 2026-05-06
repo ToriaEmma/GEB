@@ -41,10 +41,10 @@ export const TimelineJourney = () => {
         {/* Header Section */}
         <div className="mb-16 md:mb-24">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col items-start text-left"
           >
             <span className="font-heading text-xs font-bold tracking-[0.3em] uppercase text-[#2D3047] mb-6 block w-full text-left">
@@ -84,10 +84,10 @@ export const TimelineJourney = () => {
             return (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 100 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.1 }}
-                transition={{ duration: 0.8, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 0.6, delay: index * 0.05, ease: [0.16, 1, 0.3, 1] }}
                 className={`${bgClass} rounded-[2.5rem] p-8 md:p-10 flex flex-col min-h-[450px] relative overflow-hidden group cursor-pointer transition-all duration-500 hover:scale-[1.02]`}
               >
 

@@ -59,10 +59,10 @@ export const ServicesPreview = () => {
                 {/* Section Header */}
                 <div className="mb-16 md:mb-24 flex flex-col md:flex-row md:items-end justify-between gap-12">
                     <motion.div
-                        initial={{ opacity: 0, y: 50 }}
+                        initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, amount: 0.1 }}
-                        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                         className="flex flex-col items-start text-left"
                     >
                         <span className="font-heading text-xs font-bold tracking-[0.3em] uppercase text-[#4471c4] mb-6 block w-full text-left">
@@ -90,10 +90,10 @@ export const ServicesPreview = () => {
                     {formations.map((item, idx) => (
                         <motion.div
                             key={idx}
-                            initial={{ opacity: 0, y: 100 }}
+                            initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true, amount: 0.1 }}
-                            transition={{ duration: 0.8, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                            transition={{ duration: 0.6, delay: idx * 0.05, ease: [0.16, 1, 0.3, 1] }}
                             className={`${item.cols} group relative rounded-[40px] overflow-hidden min-h-[350px] md:min-h-[400px] cursor-pointer shadow-sm hover:shadow-2xl transition-all duration-700 ${item.bg || 'bg-gray-200'} ${item.invertedRadius ? 'inverted-radius' : ''}`}
                         >
                             {/* Background Image */}

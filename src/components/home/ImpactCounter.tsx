@@ -26,7 +26,7 @@ export const ImpactCounter = () => {
             visible: {
               opacity: 1,
               transition: {
-                staggerChildren: 0.15,
+                staggerChildren: 0.1,
               },
             },
           }}
@@ -63,11 +63,11 @@ export const ImpactCounter = () => {
               <motion.div
                 key={idx}
                 variants={{
-                  hidden: { opacity: 0, y: 100 },
+                  hidden: { opacity: 0, y: 30 },
                   visible: {
                     opacity: 1,
                     y: 0,
-                    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+                    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
                   },
                 }}
                 whileHover={{ y: -10, transition: { duration: 0.3 } }}
@@ -101,10 +101,10 @@ export const ImpactCounter = () => {
 
           {/* Bottom Row - Heading & Paragraph */}
           <motion.div 
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="lg:col-span-3 pt-6 pb-2 pr-0 lg:pr-10"
           >
             <h2 className="text-5xl md:text-7xl lg:text-[100px] font-black tracking-tighter leading-[0.85] text-white uppercase">
