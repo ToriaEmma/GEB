@@ -14,6 +14,7 @@ export interface Article {
   status: 'draft' | 'pending_validation' | 'approved' | 'rejected';
   author_id?: string;
   is_featured: boolean;
+  likes?: number;
   published_at?: string;
   created_at?: string;
 }
