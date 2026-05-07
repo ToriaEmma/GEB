@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { 
@@ -15,7 +15,7 @@ import {
 } from "@phosphor-icons/react";
 import Link from "next/link";
 
-export default function SearchResultsPage() {
+function SearchContent() {
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
   
@@ -200,5 +200,18 @@ export default function SearchResultsPage() {
       </div>
     )}
     </div>
+  );
+}
+
+export default function SearchResultsPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex flex-col items-center justify-center py-32 space-y-6 opacity-20">
+        <MagnifyingGlass size={80} className="animate-pulse" />
+        <p className="font-black uppercase tracking-widest text-[10px]">Chargement de la recherche...</p>
+      </div>
+    }>
+      <SearchContent />
+    </Suspense>
   );
 }
