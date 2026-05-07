@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import { DashboardSidebar } from "@/components/layout/DashboardSidebar";
-import { Bell, MagnifyingGlass } from "@phosphor-icons/react";
+import { Bell, MagnifyingGlass, ArrowLeft } from "@phosphor-icons/react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function DashboardLayout({
   children,
@@ -69,6 +70,13 @@ export default function DashboardLayout({
         {/* Top Header */}
         <header className="h-24 border-b border-white/10 flex items-center justify-between px-10 bg-meb-dark/50 backdrop-blur-md sticky top-0 z-20">
           <div className="flex items-center gap-6">
+            <Link 
+              href="/" 
+              className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 hover:border-meb-accent/50 transition-all group"
+              title="Retour au site"
+            >
+              <ArrowLeft size={20} className="group-hover:-translate-x-0.5 transition-transform" />
+            </Link>
             <h2 className="text-white font-heading font-black text-2xl uppercase tracking-tighter">
               Tableau de bord
             </h2>
