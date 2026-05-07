@@ -103,7 +103,7 @@ export const DashboardSidebar = () => {
                 <span className="text-[11px] font-bold uppercase tracking-widest">{item.label}</span>
               </div>
               
-              {item.badge > 0 && (
+              {(item.badge ?? 0) > 0 && (
                 <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black animate-pulse ${
                   isActive ? "bg-white text-meb-accent" : "bg-meb-accent text-white"
                 }`}>
