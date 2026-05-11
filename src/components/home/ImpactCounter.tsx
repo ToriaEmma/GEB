@@ -9,7 +9,7 @@ export const ImpactCounter = () => {
 
   const impacts = [
     { value: "50", suffix: "+", label: t("entreprises_accompagnees"), theme: "dark", badgeContent: "01" },
-    { value: t("experts_value"), suffix: "", label: t("experts_certifies_inter"), theme: "abstract", badgeContent: "02" },
+    { value: "", suffix: "", label: "LAURÉAT PRIX QUALITÉ CEDEAO (2019)", image: "/images/home/award.png", theme: "abstract", badgeContent: "02" },
     { value: t("afrique_value"), suffix: "", label: t("presence_continentale"), theme: "yellow", badgeContent: "03" },
     { value: "ISO", suffix: "", label: t("approche_resultats_label"), theme: "dark", badgeContent: "04" },
   ];
@@ -43,19 +43,19 @@ export const ImpactCounter = () => {
             let badgeClass = "";
 
             if (isDark) {
-              bgClass = "bg-white/10 border border-white/5";
+              bgClass = "bg-white/10 border border-white/5 backdrop-blur-lg";
               textClass = "text-white";
               descClass = "text-white/50";
               badgeClass = "text-white/30";
             } else if (isYellow) {
-              bgClass = "bg-[#2D3047]";
+              bgClass = "bg-[#2D3047] border border-white/5 shadow-2xl shadow-black/20";
               textClass = "text-white";
               descClass = "text-white/80";
               badgeClass = "text-white/30";
             } else if (isAbstract) {
-              bgClass = "bg-white/5 border border-white/10 relative overflow-hidden";
+              bgClass = "bg-white/5 border border-white/10 relative overflow-hidden backdrop-blur-md";
               textClass = "text-white";
-              descClass = "text-white/50";
+              descClass = "text-white/60";
               badgeClass = "text-white/30";
             }
 
@@ -70,29 +70,73 @@ export const ImpactCounter = () => {
                     transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
                   },
                 }}
-                whileHover={{ y: -10, transition: { duration: 0.3 } }}
-                className={`lg:col-span-1 rounded-[2.5rem] p-8 md:p-10 flex flex-col justify-between relative min-h-[300px] transition-shadow duration-500 hover:shadow-2xl hover:shadow-[#2D3047]/10 ${bgClass}`}
+                whileHover={{ 
+                  y: -10, 
+                  transition: { duration: 0.4, ease: "easeOut" },
+                  boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)"
+                }}
+                className={`lg:col-span-1 rounded-[2.5rem] p-8 md:p-10 flex flex-col justify-between relative min-h-[320px] transition-all duration-500 ${bgClass}`}
               >
+                {/* Background Decoration for Abstract Theme */}
+                {isAbstract && (
+                  <>
+                    <div className="absolute -top-20 -right-20 w-64 h-64 bg-[#4471c4] blur-[100px] opacity-30 rounded-full" />
+                    <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-white blur-[100px] opacity-10 rounded-full" />
+                  </>
+                )}
 
                 <div className="relative z-10 flex flex-col h-full justify-between">
                   {/* Badge Number */}
-                  <span className={`text-xs font-bold tracking-widest uppercase mb-8 ${badgeClass}`}>
+                  <span className={`text-[10px] font-black tracking-[0.3em] uppercase mb-4 ${badgeClass}`}>
                     ({impact.badgeContent})
                   </span>
 
                   {/* Stat Display */}
-                  <div className="mt-auto">
-                    <div className={`flex items-baseline gap-1 mb-4 ${textClass}`}>
-                      <span className={`font-heading font-black leading-[0.8] tracking-tighter ${impact.value.length > 3 ? 'text-[40px] md:text-[48px]' : 'text-[56px] md:text-[64px] lg:text-[72px]'}`}>
-                        {impact.value}
-                      </span>
-                      <span className="font-heading font-bold text-3xl">
-                        {impact.suffix}
-                      </span>
-                    </div>
-                    <p className={`text-xs md:text-sm font-bold uppercase tracking-widest leading-relaxed max-w-[150px] ${descClass}`}>
-                      {impact.label}
-                    </p>
+                  <div className="flex-1 flex flex-col justify-center">
+                    {impact.image ? (
+                      <div className="flex flex-col items-start gap-6">
+                        <div className="relative w-full h-32 md:h-44 group">
+                          {/* Glow effect behind trophy */}
+                          <div className="absolute inset-0 bg-white/20 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                          
+                          <motion.div
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            whileInView={{ scale: 1, opacity: 1 }}
+                            transition={{ duration: 1, delay: idx * 0.1 + 0.3 }}
+                            className="relative w-full h-full"
+                          >
+                            <Image 
+                              src={impact.image} 
+                              alt="Award" 
+                              fill 
+                              className="object-contain object-left drop-shadow-[0_10px_20px_rgba(0,0,0,0.2)]"
+                            />
+                          </motion.div>
+                        </div>
+                        {impact.label && (
+                          <div className="space-y-1">
+                            <p className={`text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] leading-tight ${textClass}`}>
+                              {impact.label}
+                            </p>
+                            <div className="w-10 h-[2px] bg-[#4471c4]" />
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="mt-auto">
+                        <div className={`flex items-baseline gap-1 mb-4 ${textClass}`}>
+                          <span className={`font-heading font-black leading-[0.8] tracking-tighter ${impact.value.length > 3 ? 'text-[40px] md:text-[48px]' : 'text-[56px] md:text-[64px] lg:text-[80px]'}`}>
+                            {impact.value}
+                          </span>
+                          <span className="font-heading font-bold text-3xl">
+                            {impact.suffix}
+                          </span>
+                        </div>
+                        <p className={`text-xs md:text-[13px] font-bold uppercase tracking-[0.15em] leading-relaxed max-w-[180px] ${descClass}`}>
+                          {impact.label}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </motion.div>

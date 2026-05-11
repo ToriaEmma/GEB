@@ -51,18 +51,7 @@ function CommentItem({ comment, onReply, depth = 0 }: { comment: Comment; onRepl
                             <p className="text-[9px] text-[#111c2f]/50 font-black uppercase tracking-widest">{comment.date}</p>
                         </div>
                     </div>
-                    {comment.status === 'pending' && (
-                        <span className="flex items-center gap-1 text-[8px] font-black uppercase tracking-widest text-amber-700 bg-amber-100/50 px-2.5 py-1 flex-shrink-0">
-                            <Warning size={10} weight="fill" />
-                            {t('en_attente')}
-                        </span>
-                    )}
-                    {comment.status === 'approved' && (
-                        <span className="flex items-center gap-1 text-[8px] font-black uppercase tracking-widest text-[#111c2f] bg-[#111c2f]/10 px-2.5 py-1 flex-shrink-0">
-                            <Check size={10} weight="bold" />
-                            {t('publie')}
-                        </span>
-                    )}
+                    {/* Status badges removed for public view */}
                 </div>
                 <p className="text-sm text-[#111c2f]/80 leading-relaxed font-medium">{comment.content}</p>
                 {depth < 2 && (
@@ -117,7 +106,6 @@ function CommentForm({ onSubmit, parentId, onCancel }: {
                 >
                     <Check size={24} weight="bold" className="text-emerald-600 mx-auto mb-2" />
                     <p className="text-sm font-black text-emerald-700">{t('commentaire_soumis')}</p>
-                    <p className="text-xs text-emerald-600 mt-1">{t('invisible_validation')}</p>
                 </motion.div>
             ) : (
                 <>
@@ -137,9 +125,6 @@ function CommentForm({ onSubmit, parentId, onCancel }: {
                         rows={3}
                         className="w-full border-b border-[#111c2f]/20 py-3 text-sm font-medium focus:outline-none focus:border-[#111c2f] transition-colors text-[#111c2f] placeholder:text-[#111c2f]/40 bg-transparent resize-none"
                     />
-                    <p className="text-[9px] text-[#111c2f]/50 font-black uppercase tracking-widest mt-2">
-                        {t('validation_notice')}
-                    </p>
                     <div className="flex gap-3 mt-6">
                         <button
                             type="submit"
@@ -192,10 +177,12 @@ export default function ArticlePage({ params }: { params: Promise<{ slug: string
                 // Fetch comments for this article
                 if (data.id) {
                     const dbComments = await commentService.getByArticle(data.id);
+                    // Only include approved comments in the public view
+                    const approvedDbComments = dbComments.filter(c => c.status === 'approved');
                     
                     // Create a map for easy access
                     const commentMap: Record<string, Comment> = {};
-                    dbComments.forEach(c => {
+                    approvedDbComments.forEach(c => {
                         commentMap[c.id!] = {
                             id: c.id!,
                             name: c.name,
@@ -208,7 +195,7 @@ export default function ArticlePage({ params }: { params: Promise<{ slug: string
 
                     // Build the tree
                     const rootComments: Comment[] = [];
-                    dbComments.forEach(c => {
+                    approvedDbComments.forEach(c => {
                         if (c.parent_id && commentMap[c.parent_id]) {
                             commentMap[c.parent_id].replies.push(commentMap[c.id!]);
                         } else {
@@ -511,7 +498,7 @@ export default function ArticlePage({ params }: { params: Promise<{ slug: string
                 <div className="lg:col-span-8">
                     <div className="flex items-center gap-3 mb-10">
                         <h2 className="text-[10px] font-black text-[#111c2f]/50 tracking-widest uppercase">
-                            Commentaires ({comments.filter(c => c.status === 'approved').length})
+                            Commentaires ({comments.length})
                         </h2>
                     </div>
 

@@ -9,7 +9,7 @@ import { articleService, type Article } from '@/lib/services/articles';
 import { formatDate, type Category } from './data';
 import { useLanguage } from '@/context/LanguageContext';
 
-const ALL_CATEGORIES: (Category | 'Tous')[] = ['Tous', 'Normes ISO', 'Audit', 'Certification', 'Conseil', 'Digital'];
+const ALL_CATEGORIES: (Category | 'Tous')[] = ['Tous', 'Management de la qualité', 'Audit', 'Certification', 'Conseil', 'Digital'];
 
 const categoryColors: Record<string, string> = {
     'Normes ISO': 'bg-blue-100 text-blue-700',
@@ -44,11 +44,11 @@ export default function ActualitesPage() {
 
     const ALL_CATEGORIES_LOCALIZED = [
         { id: 'Tous', label: language === 'FR' ? 'Tous' : 'All' },
-        { id: 'Normes ISO', label: t('management_qualite') },
-        { id: 'Audit', label: t('cat_audit') },
-        { id: 'Certification', label: t('cat_certification') },
-        { id: 'Conseil', label: t('cat_conseil') },
-        { id: 'Digital', label: t('cat_digital') },
+        { id: 'Management de la qualité', label: language === 'FR' ? 'Management de la qualité' : t('management_qualite') },
+        { id: 'Audit', label: language === 'FR' ? 'Audit' : t('cat_audit') },
+        { id: 'Certification', label: language === 'FR' ? 'Certification' : t('cat_certification') },
+        { id: 'Conseil', label: language === 'FR' ? 'Conseil' : t('cat_conseil') },
+        { id: 'Digital', label: language === 'FR' ? 'Digital' : t('cat_digital') },
     ];
 
     const getCategoryLabel = (cat: string) => {
@@ -156,33 +156,31 @@ export default function ActualitesPage() {
                         ) : null}
                     </motion.div>
 
-                    {/* Bottom Left: Filters */}
+                    {/* Vertical Filters (Left side) */}
                     <motion.div 
-                        initial={{ opacity: 0, y: 60 }}
+                        initial={{ opacity: 0, y: 40 }}
                         whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, amount: 0.1 }}
-                        transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-                        className="lg:col-span-4 lg:col-start-1 flex flex-col justify-end"
+                        viewport={{ once: true }}
+                        className="lg:col-span-3 flex flex-col gap-6 bg-white/5 border border-white/10 p-6 rounded-[32px] h-fit lg:sticky lg:top-32"
                     >
-                        <div className="flex items-center gap-4 mb-8">
-                            <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shrink-0">
-                                <ArrowUpRight size={20} className="text-[#111c2f]" weight="bold" />
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0">
+                                <ArrowUpRight size={16} className="text-[#111c2f]" weight="bold" />
                             </div>
-                            <p className="text-[10px] font-black uppercase tracking-widest opacity-60 max-w-[200px]">
+                            <p className="text-[9px] font-black uppercase tracking-widest opacity-60 leading-tight">
                                 {language === 'FR' ? "EXPLOREZ NOS ARTICLES ET ÉTUDES DE CAS" : "EXPLORE OUR ARTICLES AND CASE STUDIES"}
                             </p>
                         </div>
                         
-                        {/* Category Filter - Outline Pills */}
-                        <div className="flex flex-col gap-4 w-full">
+                        <div className="flex flex-col gap-2">
                             {ALL_CATEGORIES_LOCALIZED.map(cat => (
                                 <button
                                     key={cat.id}
                                     onClick={() => setActiveCategory(cat.id as Category | 'Tous')}
-                                    className={`px-8 py-4 rounded-full border text-xs font-black uppercase tracking-widest transition-all text-left w-full max-w-sm ${
+                                    className={`w-full text-left px-5 py-3 rounded-2xl border text-[10px] font-black uppercase tracking-widest transition-all ${
                                         activeCategory === cat.id
-                                            ? 'border-white text-white bg-white/10'
-                                            : 'border-white/20 text-white/60 hover:border-white/50 hover:bg-white/5'
+                                            ? 'border-white text-[#111c2f] bg-white'
+                                            : 'border-white/10 text-white/60 hover:border-white/30 hover:bg-white/5'
                                     }`}
                                 >
                                     {cat.label}
@@ -191,15 +189,15 @@ export default function ActualitesPage() {
                         </div>
                     </motion.div>
 
-                    {/* Bottom Right: 3 Small Cards */}
+                    {/* Articles Grid (Right side) */}
                     <motion.div 
                         initial={{ opacity: 0, y: 100 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, amount: 0.1 }}
                         transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-                        className="lg:col-span-8 lg:col-start-5 flex flex-col justify-end"
+                        className="lg:col-span-9 xl:col-span-9"
                     >
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8">
                             {loading ? (
                                 [1, 2, 3].map(i => (
                                     <div key={i} className="bg-white/5 h-[360px] rounded-3xl animate-pulse" />
@@ -216,7 +214,7 @@ export default function ActualitesPage() {
                                     return (
                                         <Link href={`/actualites/${article.slug}`} key={article.id} className="block group">
                                             <motion.div 
-                                                className={`relative ${color.bg} p-8 h-[360px] flex flex-col justify-between overflow-hidden inverted-radius-tr-sm`}
+                                                className={`relative ${color.bg} p-8 h-[360px] flex flex-col justify-between overflow-hidden inverted-radius-tr-sm rounded-[40px]`}
                                                 whileHover={{ scale: 0.96 }}
                                                 transition={{ duration: 0.4 }}
                                             >

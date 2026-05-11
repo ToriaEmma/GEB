@@ -277,7 +277,7 @@ export default function ContactPage() {
 
                     {/* Simplified Matrix Sub-Footer */}
                     <div className="mt-24 pt-12 border-t border-gray-100 flex flex-col md:flex-row justify-between items-end gap-12 text-[#111c2f]">
-                        <div className="max-w-md">
+                        <div className="max-w-md md:pl-12">
                             <h2 className="text-4xl font-heading font-black uppercase leading-none tracking-tighter mb-4">
                                 BEG <span className="text-[#4471c4]">GROUP</span>
                             </h2>

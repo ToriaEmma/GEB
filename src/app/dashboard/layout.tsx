@@ -41,8 +41,8 @@ export default function DashboardLayout({
 
       // 2. Récupérer le total "En attente" (Somme des 3 catégories)
       const { count: msgCount } = await supabase.from('contact_messages').select('*', { count: 'exact', head: true }).eq('status', 'unread');
-      const { count: commCount } = await supabase.from('comments').select('*', { count: 'exact', head: true }).eq('is_approved', false);
-      const { count: valCount } = await supabase.from('articles').select('*', { count: 'exact', head: true }).eq('status', 'pending');
+      const { count: commCount } = await supabase.from('comments').select('*', { count: 'exact', head: true }).eq('status', 'pending');
+      const { count: valCount } = await supabase.from('articles').select('*', { count: 'exact', head: true }).eq('status', 'pending_validation');
 
       setStats({
         visitors: statsData?.unique_visitors || 1284,
@@ -107,10 +107,6 @@ export default function DashboardLayout({
           <div className="flex items-center gap-4">
             {/* Quick Stats Summary */}
             <div className="hidden lg:flex items-center gap-8 mr-8">
-              <div className="text-right">
-                <p className="text-[8px] text-white/30 uppercase tracking-widest">Visiteurs</p>
-                <p className="text-sm font-black text-white">{stats.visitors.toLocaleString()}</p>
-              </div>
               <div className="text-right">
                 <p className="text-[8px] text-white/30 uppercase tracking-widest">En attente</p>
                 <p className="text-sm font-black text-meb-accent">{stats.pending.toString().padStart(2, '0')}</p>

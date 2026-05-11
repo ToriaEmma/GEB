@@ -7,6 +7,9 @@ CREATE TABLE profiles (
   id UUID REFERENCES auth.users ON DELETE CASCADE PRIMARY KEY,
   full_name TEXT,
   role user_role DEFAULT 'BUSINESS_DEV',
+  can_validate BOOLEAN DEFAULT false,
+  can_read_messages BOOLEAN DEFAULT false,
+  can_moderate_comments BOOLEAN DEFAULT false,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );

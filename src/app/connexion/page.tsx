@@ -99,11 +99,11 @@ export default function LoginPage() {
           <div className="hidden lg:flex flex-col justify-between p-12 bg-gradient-to-br from-meb-accent/20 to-transparent relative overflow-hidden border-r border-white/5">
              <div className="relative z-10">
                 <Image 
-                  src="/images/logo-offici.png" 
+                  src="/images/favicon-trimmed.png" 
                   alt="BEG" 
-                  width={110} 
-                  height={30} 
-                  className="brightness-0 invert opacity-50 mb-8"
+                  width={52} 
+                  height={52} 
+                  className="opacity-80 mb-8 hover:scale-105 transition-transform duration-500"
                 />
                 <h2 className="text-4xl font-heading font-black text-white leading-none tracking-tighter uppercase mb-4">
                   Le futur de <br/><span className="text-meb-accent underline decoration-white/10 underline-offset-8">l'expertise</span>.
@@ -142,11 +142,11 @@ export default function LoginPage() {
           <div className="p-8 md:p-12 flex flex-col justify-center">
             <div className="mb-8 lg:hidden text-center">
               <Image 
-                src="/images/logo-offici.png" 
+                src="/images/favicon-trimmed.png" 
                 alt="BEG" 
-                width={100} 
-                height={30} 
-                className="brightness-0 invert opacity-50 mx-auto mb-6"
+                width={52} 
+                height={52} 
+                className="opacity-80 mx-auto mb-6 hover:scale-105 transition-transform duration-500"
               />
             </div>
 
@@ -232,14 +232,7 @@ export default function LoginPage() {
                 )}
               </button>
 
-              {/* Dev Bypass Button */}
-              <button 
-                type="button"
-                onClick={() => router.push("/dashboard")}
-                className="w-full py-4 text-[9px] font-black uppercase tracking-[0.4em] text-white/10 hover:text-meb-accent transition-all border border-dashed border-white/5 rounded-xl mt-4"
-              >
-                Accès Rapide Développeur (Skip Auth)
-              </button>
+
             </form>
           </div>
         </div>

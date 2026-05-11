@@ -12,6 +12,7 @@ import {
 } from "@phosphor-icons/react";
 import { articleService, Article } from "@/lib/services/articles";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function ValidationCenterPage() {
   const [pendingItems, setPendingItems] = useState<Article[]>([]);
@@ -101,10 +102,10 @@ export default function ValidationCenterPage() {
               </div>
 
               <div className="flex items-center gap-3">
-                <button className="flex-1 lg:flex-none bg-white/5 text-white/70 border border-white/10 px-8 py-4 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-white hover:text-meb-dark transition-all flex items-center justify-center gap-2">
+                <Link href={`/dashboard/actualites/modifier/${item.id}`} className="flex-1 lg:flex-none bg-white/5 text-white/70 border border-white/10 px-8 py-4 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-white hover:text-meb-dark transition-all flex items-center justify-center gap-2">
                   <ArrowUpRight size={16} weight="bold" />
                   Examiner
-                </button>
+                </Link>
                 <button 
                   onClick={() => item.id && handleApprove(item.id)}
                   className="flex-1 lg:flex-none bg-meb-accent text-white px-8 py-4 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:scale-105 transition-all flex items-center justify-center gap-2"

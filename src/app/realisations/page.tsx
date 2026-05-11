@@ -196,11 +196,10 @@ export default function RealisationsPage() {
                                                          <Briefcase size={40} className="text-white/20" />
                                                      </div>
                                                  )}
-                                                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
                                                  
                                                  <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end z-20">
-                                                    <span className="text-[10px] font-heading font-black uppercase text-white/90 drop-shadow-md tracking-widest">
-                                                        Client: <br/><span className="text-white">{project.client}</span>
+                                                    <span className="text-[10px] font-heading font-black uppercase text-[#111c2f] bg-white/80 backdrop-blur-md px-4 py-2 rounded-xl shadow-lg tracking-widest">
+                                                        Client: <span className="opacity-70">{project.client}</span>
                                                     </span>
                                                     {project.link && (
                                                         <a 

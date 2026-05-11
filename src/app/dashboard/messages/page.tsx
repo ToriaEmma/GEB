@@ -4,11 +4,9 @@ import React, { useState, useEffect } from "react";
 import { 
   Envelope, 
   Trash, 
-  Archive, 
   MagnifyingGlass,
   ArrowUpRight,
-  CaretRight,
-  ArrowUUpLeft
+  CaretRight
 } from "@phosphor-icons/react";
 import { messageService, ContactMessage } from "@/lib/services/messages";
 
@@ -16,7 +14,6 @@ export default function MessagesAdminPage() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [filter, setFilter] = useState<'unread' | 'archived'>('unread');
   const [replyText, setReplyText] = useState("");
 
   useEffect(() => {
@@ -65,10 +62,8 @@ export default function MessagesAdminPage() {
     }
   };
 
-  const filteredMessages = messages.filter(m => {
-    if (filter === 'archived') return m.status === 'archived';
-    return m.status !== 'archived';
-  });
+  // We only show non-archived messages (or all messages if we consider archiving obsolete)
+  const filteredMessages = messages;
 
   return (
     <div className="space-y-8 h-[calc(100vh-160px)] flex flex-col">
@@ -81,20 +76,6 @@ export default function MessagesAdminPage() {
           <p className="text-white/50 text-sm font-medium">
             Gérez vos demandes de contact et prospects.
           </p>
-        </div>
-        <div className="flex items-center gap-3 bg-white/5 p-2 rounded-2xl border border-white/5">
-          <button 
-            onClick={() => setFilter('unread')}
-            className={`px-6 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${filter === 'unread' ? 'bg-meb-accent text-white shadow-lg shadow-meb-accent/20' : 'text-white/50 hover:text-white'}`}
-          >
-            Boîte de réception ({messages.filter(m => m.status === 'unread').length})
-          </button>
-          <button 
-            onClick={() => setFilter('archived')}
-            className={`px-6 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${filter === 'archived' ? 'bg-purple-500 text-white shadow-lg' : 'text-white/50 hover:text-white'}`}
-          >
-            Archivés
-          </button>
         </div>
       </div>
 
@@ -163,28 +144,6 @@ export default function MessagesAdminPage() {
                     <ArrowUpRight size={20} weight="bold" />
                   </a>
                   <button 
-                    onClick={async () => {
-                      if (selectedMsg.id) {
-                        try {
-                          if (selectedMsg.status === 'archived') {
-                            await messageService.unarchive(selectedMsg.id);
-                            setMessages(prev => prev.map(m => m.id === selectedMsg.id ? { ...m, status: 'read' } : m));
-                          } else {
-                            await messageService.archive(selectedMsg.id);
-                            setMessages(prev => prev.map(m => m.id === selectedMsg.id ? { ...m, status: 'archived' } : m));
-                          }
-                          setSelectedId(null);
-                        } catch (err) {
-                          alert("Erreur lors de l'opération");
-                        }
-                      }
-                    }}
-                    className={`w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/50 transition-all ${selectedMsg.status === 'archived' ? 'hover:bg-emerald-500 hover:text-white' : 'hover:bg-purple-500 hover:text-white'}`} 
-                    title={selectedMsg.status === 'archived' ? "Désarchiver" : "Archiver"}
-                  >
-                    {selectedMsg.status === 'archived' ? <ArrowUUpLeft size={20} weight="bold" /> : <Archive size={20} />}
-                  </button>
-                  <button 
                     onClick={() => selectedMsg.id && handleDelete(selectedMsg.id)}
                     className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:bg-meb-red hover:text-white transition-all" 
                     title="Supprimer"
@@ -221,20 +180,15 @@ export default function MessagesAdminPage() {
                     onChange={(e) => setReplyText(e.target.value)}
                     className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-6 h-14 text-[11px] font-bold uppercase tracking-widest text-white focus:outline-none focus:border-meb-accent transition-all"
                   />
-                  <button 
+                  <a 
+                    href={`mailto:${selectedMsg.email}?subject=${encodeURIComponent(`RE: ${selectedMsg.subject || 'Votre demande'}`)}&body=${encodeURIComponent(replyText)}`}
                     onClick={() => {
-                      const subject = encodeURIComponent(`RE: ${selectedMsg.subject || 'Votre demande'}`);
-                      const body = encodeURIComponent(replyText);
-                      const mailtoLink = `mailto:${selectedMsg.email}?subject=${subject}&body=${body}`;
-                      
-                      // Méthode de secours ultra-fiable
-                      window.open(mailtoLink, '_self');
-                      setReplyText("");
+                      setTimeout(() => setReplyText(""), 100);
                     }}
                     className="bg-meb-accent text-white px-8 h-14 rounded-2xl font-heading font-bold uppercase text-[10px] tracking-[0.2em] hover:bg-white hover:text-meb-dark transition-all flex items-center shadow-lg active:scale-95"
                   >
                     Envoyer
-                  </button>
+                  </a>
                 </div>
               </div>
             </>

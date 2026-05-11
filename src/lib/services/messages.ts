@@ -6,7 +6,7 @@ export interface ContactMessage {
   email: string;
   subject: string;
   message: string;
-  status: 'unread' | 'read' | 'archived';
+  status: 'unread' | 'read';
   created_at?: string;
 }
 
@@ -32,24 +32,6 @@ export const messageService = {
   },
 
   async markAsRead(id: string) {
-    const { error } = await supabase
-      .from('contact_messages')
-      .update({ status: 'read' })
-      .match({ id });
-    
-    if (error) throw error;
-  },
-
-  async archive(id: string) {
-    const { error } = await supabase
-      .from('contact_messages')
-      .update({ status: 'archived' })
-      .match({ id });
-    
-    if (error) throw error;
-  },
-
-  async unarchive(id: string) {
     const { error } = await supabase
       .from('contact_messages')
       .update({ status: 'read' })

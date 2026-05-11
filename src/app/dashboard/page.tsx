@@ -18,13 +18,17 @@ import { articleService } from "@/lib/services/articles";
 import { commentService } from "@/lib/services/comments";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
 
 export default function DashboardPage() {
+  const { profile } = useAuth();
+  const isDirector = profile?.role === 'DG_CEO';
+
   const [stats, setStats] = useState([
+    { label: "Visiteurs", value: "0", trend: "Pages vues", icon: Eye, color: "bg-emerald-500" },
     { label: "Articles Publiés", value: "0", trend: "Actuel", icon: FileText, color: "bg-meb-accent" },
     { label: "Commentaires", value: "0", trend: "À valider", icon: ChatCircleText, color: "bg-yellow-500" },
     { label: "Messages", value: "0", trend: "Nouveaux", icon: EnvelopeOpen, color: "bg-red-500" },
-    { label: "Projets", value: "0", trend: "En ligne", icon: CheckCircle, color: "bg-purple-500" },
   ]);
 
   const [pendingItems, setPendingItems] = useState<any[]>([]);
@@ -37,16 +41,16 @@ export default function DashboardPage() {
   const fetchDashboardData = async () => {
     try {
       // 1. Fetch Stats
+      const { count: visitorsCount } = await supabase.from('site_stats').select('*', { count: 'exact', head: true }).eq('event_type', 'page_view');
       const { count: articlesCount } = await supabase.from('articles').select('*', { count: 'exact', head: true }).eq('status', 'approved');
       const { count: commentsCount } = await supabase.from('comments').select('*', { count: 'exact', head: true }).eq('status', 'pending');
       const { count: messagesCount } = await supabase.from('contact_messages').select('*', { count: 'exact', head: true }).eq('is_read', false);
-      const { count: projectsCount } = await supabase.from('projects').select('*', { count: 'exact', head: true });
 
       setStats([
+        { label: "Visiteurs", value: (visitorsCount || 0).toString(), trend: "Pages vues", icon: Eye, color: "bg-emerald-500" },
         { label: "Articles Publiés", value: (articlesCount || 0).toString(), trend: "En ligne", icon: FileText, color: "bg-meb-accent" },
         { label: "Commentaires", value: (commentsCount || 0).toString(), trend: "En attente", icon: ChatCircleText, color: "bg-yellow-500" },
         { label: "Messages", value: (messagesCount || 0).toString(), trend: "Non lus", icon: EnvelopeOpen, color: "bg-red-500" },
-        { label: "Projets", value: (projectsCount || 0).toString(), trend: "Total", icon: CheckCircle, color: "bg-purple-500" },
       ]);
 
       // 2. Fetch Pending Items (Articles + Comments)
@@ -71,10 +75,10 @@ export default function DashboardPage() {
       {/* Welcome Section */}
       <section>
         <h1 className="text-white font-heading font-black text-4xl md:text-5xl uppercase tracking-tighter mb-4">
-          Bonjour, <span className="text-meb-accent">Directeur</span>
+          Bonjour, <span className="text-meb-accent">{isDirector ? "Directeur" : "membre du staff"}</span>
         </h1>
         <p className="text-white/50 text-sm max-w-2xl font-medium">
-          Bienvenue sur votre espace d'administration. Vous avez <span className="text-white font-bold">{pendingItems.length} contenus en attente</span> de validation aujourd'hui.
+          Bienvenue sur votre espace d'administration. Vérifiez vos notifications et validations.
         </p>
       </section>
 

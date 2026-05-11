@@ -39,13 +39,13 @@ export const MobileMenuOverlay = ({ isOpen, onClose, navLinks }: MobileMenuOverl
           >
             {/* Header */}
             <div className="flex items-center justify-between mb-12">
-              <Link href="/" onClick={onClose} className="w-32">
+              <Link href="/" onClick={onClose} className="block">
                 <Image 
-                  src="/images/logo-offici.png" 
-                  alt="Logo" 
-                  width={150} 
-                  height={50} 
-                  className="object-contain"
+                  src="/images/favicon-trimmed.png" 
+                  alt="BEG Favicon" 
+                  width={52} 
+                  height={52} 
+                  className="object-contain hover:scale-105 transition-transform duration-500"
                 />
               </Link>
               <button 
